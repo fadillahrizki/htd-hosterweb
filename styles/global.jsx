@@ -20,6 +20,9 @@ export const globalStyles = StyleSheet.create({
         borderRadius:10,  
         width:'100%',
     },
+    buttonDisabled: {
+        backgroundColor: '#ccc',
+    },
     buttonText:{
         textAlign: 'center',
         color: '#fff',
@@ -27,5 +30,9 @@ export const globalStyles = StyleSheet.create({
     image:{
         height:350,
         width: '100%',
+    },
+    errorText:{
+        color:'red',
+        fontSize: 12
     }
 })

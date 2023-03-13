@@ -18,11 +18,15 @@ import Carousel from 'react-native-snap-carousel'
 import { globalStyles } from '../styles/global';
 import CustomButton from '../components/CustomButton';
 import { Formik } from 'formik';
+import { StatusBar } from 'expo-status-bar';
 
+import { API_URL } from '@env'
 
 function Login({navigation}) {
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  const [isError, setIsError] = useState(false)
 
   const data = [
     {
@@ -45,11 +49,12 @@ function Login({navigation}) {
   const handleLogin = async (values) => {
 
     try {
-      const res = await axios.post('http://kedokteran.htd-official.com/api/v1/login', values)
+      const res = await axios.post(API_URL+'/login', values)
       console.log(res)
-      setMessage("Login Sukses")
-      Alert.alert("Sukses", "Anda Berhasil Login!")
+      setIsError(false)
+      Alert.alert("Berhasil", "Anda Berhasil Login!")
     } catch (error) {
+      setIsError(true)
       console.log(error);
       if (error.response) {
         setErrorMessage(error.response.data.message)
@@ -67,6 +72,7 @@ function Login({navigation}) {
 
   return (
     <SafeAreaView style={globalStyles.container}>
+      <StatusBar backgroundColor="#ccc" />
       <ScrollView>
         <View
           style={{
@@ -106,6 +112,8 @@ function Login({navigation}) {
                 width:'100%'
               }}>
 
+                {/* <Text style={{display: isError ? 'flex' : 'none', ...globalStyles.errorText}}>Username / Password tidak sesuai!</Text> */}
+
                 <TextInput 
                   style={globalStyles.input} 
                   placeholder="Username..." 
@@ -123,7 +131,7 @@ function Login({navigation}) {
                   secureTextEntry={true}
                   value={values.password}/>
 
-                <CustomButton text={'Login'} onPress={handleSubmit} />
+                <CustomButton text={'Login'} onPress={handleSubmit}/>
               </View>
             )}
             
