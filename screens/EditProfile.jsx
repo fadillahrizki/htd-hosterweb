@@ -2,6 +2,7 @@
 import React, {useState} from 'react';
 import {
   Button,
+  Image,
   SafeAreaView,
   ScrollView,
   Text,
@@ -12,13 +13,16 @@ import {
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-import DocumentPicker, {
-  DocumentPickerResponse,
-} from 'react-native-document-picker';
+import axios from 'axios';
+import { globalStyles } from '../styles/global';
+import * as ImagePicker from "expo-image-picker";
 
-function EditProfile() {
+
+function EditProfile({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
 
+  const [message, setMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [name, onChangeName] = useState('');
   const [address, onChangeAddress] = useState('');
   const [phone, onChangePhone] = useState('');
@@ -26,18 +30,17 @@ function EditProfile() {
   const [password, onChangePassword] = useState('');
   const [photo, setPhoto] = useState(null);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   const selectFile = async () => {
     try {
-      const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.images],
+      let res = await ImagePicker.launchImageLibraryAsync({
+        quality: 1,
       });
-      setPhoto(res[0]);
+      console.log(res)
+      setPhoto(res.assets[0])
+      console.log(photo)
     } catch (err) {
-      setPhoto(null);
+      console.log(err)
+      setPhoto(null)
     }
   };
 
@@ -52,14 +55,14 @@ function EditProfile() {
     formData.append('pic_url', photo);
 
     try {
-      const res = await axios.post('http://kedokteran.htd-official.com/api/v1/register', formData, {
+      const res = await axios.post('http://kedokteran.htd-official.com/api/v1/EditProfile', formData, {
         headers:{
           'accept': 'application/json',
           'Content-Type':'multipart/form-data',
         }
       })
       console.log(res)
-      setMessage("Register Sukses")
+      setMessage("EditProfile Sukses")
     } catch (error) {
       if (error.response) {
         setErrorMessage(error.response.data.message)
@@ -96,29 +99,15 @@ function EditProfile() {
             Welcome to HosterWeb
           </Text>
 
+          <Text>{message}</Text>
+          <Text>{errorMessage}</Text>
+
           <TextInput
             style={globalStyles.input}
             placeholder="Nama..."
             placeholderTextColor={'#333'}
             onChangeText={onChangeName}
             value={name}
-          />
-
-          <TextInput
-            style={globalStyles.input}
-            placeholder="Alamat..."
-            placeholderTextColor={'#333'}
-            onChangeText={onChangeAddress}
-            value={address}
-          />
-
-          <TextInput
-            style={globalStyles.input}
-            placeholder="No.HP/WA..."
-            placeholderTextColor={'#333'}
-            onChangeText={onChangePhone}
-            value={phone}
-            keyboardType={'phone-pad'}
           />
 
           <TextInput
@@ -138,9 +127,28 @@ function EditProfile() {
             secureTextEntry={true}
           />
 
-          <Button title="Photo" onPress={selectFile} />
+          <TextInput
+            style={globalStyles.input}
+            placeholder="Alamat..."
+            placeholderTextColor={'#333'}
+            onChangeText={onChangeAddress}
+            value={address}
+          />
 
-          <Button title="Update" onPress={handleEditProfile} />
+          <TextInput
+            style={globalStyles.input}
+            placeholder="No.HP/WA..."
+            placeholderTextColor={'#333'}
+            onChangeText={onChangePhone}
+            value={phone}
+            keyboardType={'phone-pad'}
+          />
+
+          <Image source={{uri: photo?.uri}} style={{width:150, height:150, display: photo != null ? 'flex' : 'none'}}/>
+
+          <CustomButton text={'Select Photo'} onPress={selectFile} />
+          <CustomButton text={'Daftar'} onPress={handleEditProfile} />
+          <CustomButton text={'Login'} onPress={()=>navigation.navigate('Login')} />
         </View>
       </ScrollView>
     </SafeAreaView>

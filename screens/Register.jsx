@@ -144,7 +144,7 @@ function Register({navigation}) {
             keyboardType={'phone-pad'}
           />
 
-          <Image source={{uri: photo?.uri}} style={{width:150, height:150}}/>
+          <Image source={{uri: photo?.uri}} style={{width:150, height:150, display: photo != null ? 'flex' : 'none'}}/>
 
           <CustomButton text={'Select Photo'} onPress={selectFile} />
           <CustomButton text={'Daftar'} onPress={handleRegister} />

@@ -17,12 +17,10 @@ import {
 import Carousel from 'react-native-snap-carousel'
 import { globalStyles } from '../styles/global';
 import CustomButton from '../components/CustomButton';
+import { Formik } from 'formik';
 
 
 function Login({navigation}) {
-  const [username, onChangeUsername] = useState('');
-  const [password, onChangePassword] = useState('');
-
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -44,10 +42,10 @@ function Login({navigation}) {
     },
   ];
 
-  const handleLogin = async () => {
+  const handleLogin = async (values) => {
 
     try {
-      const res = await axios.post('http://kedokteran.htd-official.com/api/v1/login', {username:username, password:password})
+      const res = await axios.post('http://kedokteran.htd-official.com/api/v1/login', values)
       console.log(res)
       setMessage("Login Sukses")
       Alert.alert("Sukses", "Anda Berhasil Login!")
@@ -94,12 +92,43 @@ function Login({navigation}) {
             sliderWidth={Dimensions.get('window').width}
             itemWidth={Dimensions.get('window').width}
           />
+
+          <Formik
+            initialValues={{username: '', password: ''}}
+            onSubmit={(values)=>{
+              handleLogin(values)
+            }}
+          >
+            {({ handleChange, handleBlur, handleSubmit, values }) => (
+              <View style={{
+                flexDirection:'column',
+                gap:20,
+                width:'100%'
+              }}>
+
+                <TextInput 
+                  style={globalStyles.input} 
+                  placeholder="Username..." 
+                  placeholderTextColor={"#333"} 
+                  onChangeText={handleChange('username')} 
+                  onBlur={handleBlur('username')} 
+                  value={values.username}/>
+
+                <TextInput 
+                  style={globalStyles.input} 
+                  placeholder="Password..." 
+                  placeholderTextColor={"#333"} 
+                  onChangeText={handleChange('password')} 
+                  onBlur={handleBlur('password')} 
+                  secureTextEntry={true}
+                  value={values.password}/>
+
+                <CustomButton text={'Login'} onPress={handleSubmit} />
+              </View>
+            )}
             
-          <TextInput style={globalStyles.input} placeholder="Username..." placeholderTextColor={"#333"} onChangeText={onChangeUsername} value={username}/>
-
-          <TextInput style={globalStyles.input}placeholder="Password..." placeholderTextColor={"#333"} onChangeText={onChangePassword} value={password} secureTextEntry={true}/>
-
-          <CustomButton text={'Login'} onPress={handleLogin} />
+          </Formik>
+            
           <CustomButton text={'Register'} onPress={()=>navigation.navigate('Register')} />
         </View>
       </ScrollView>
