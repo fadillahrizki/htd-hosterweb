@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
 import {
+  Dimensions,
   Image,
   SafeAreaView,
   ScrollView,
@@ -100,15 +101,6 @@ function EditProfile({navigation}) {
             flexDirection: 'column',
             gap: 12,
           }}>
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: 'bold',
-              textAlign: 'center',
-              paddingVertical: 24,
-            }}>
-            Welcome to HosterWeb
-          </Text>
 
           <Formik
             initialValues={{nama:'', username: '', password: '', alamat: '', phone: ''}}

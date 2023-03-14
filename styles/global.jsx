@@ -3,7 +3,8 @@ import { Dimensions, StyleSheet } from "react-native";
 export const globalStyles = StyleSheet.create({
     container:{
         flex: 1,
-        height: Dimensions.get('window').height
+        height: Dimensions.get('window').height,
+        backgroundColor: '#fff'
     },  
     input: {
         width: '100%',
@@ -34,5 +35,18 @@ export const globalStyles = StyleSheet.create({
     errorText:{
         color:'red',
         fontSize: 12
-    }
+    },
+    card:{
+        padding:12,
+        borderRadius:6,
+        elevation:3,
+        backgroundColor:'#fff',
+        shadowOffset:{width:1,height:1},
+        shadowColor:"#333",
+        shadowOpacity:0.3,
+        shadowRadius:2,
+        marginHorizontal:12,
+        marginVertical:8,
+        gap:8
+    },
 })
