@@ -27,8 +27,8 @@ function Home({navigation}) {
     return (
         <SafeAreaView style={globalStyles.container}>
             <StatusBar backgroundColor="#ccc" />
-            <ScrollView>
-                <View
+            
+            <View
                 style={{
                     backgroundColor: isDarkMode ? Colors.black : Colors.white,
                     padding: 24,
@@ -36,7 +36,7 @@ function Home({navigation}) {
                     alignItems:'center',
                     justifyContent:'center',
                     gap: 12,
-                    height:Dimensions.get('window').height
+                    flex:1
                 }}> 
                     <Text
                         style={{
@@ -54,7 +54,6 @@ function Home({navigation}) {
                     <CustomButton text={'Keluar'} onPress={handleLogout} />
                 
                 </View>
-            </ScrollView>
         </SafeAreaView>
     );
 }
