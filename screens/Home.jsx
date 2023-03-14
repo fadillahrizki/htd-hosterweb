@@ -33,7 +33,6 @@ function Home({navigation}) {
                     backgroundColor: isDarkMode ? Colors.black : Colors.white,
                     padding: 24,
                     flexDirection: 'column',
-                    alignItems:'center',
                     justifyContent:'center',
                     gap: 12,
                     flex:1

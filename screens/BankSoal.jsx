@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
 import {
+    Alert,
   FlatList,
+  Modal,
   Pressable,
   SafeAreaView,
-  ScrollView,
   Text,
-  ToastAndroid,
   useColorScheme,
   View,
 } from 'react-native';
@@ -22,9 +22,7 @@ import FAB from 'react-native-fab';
 function BankSoal({navigation}) {
     const isDarkMode = useColorScheme() === 'dark';
 
-    const handleLogout = () => {
-        ToastAndroid.show("Logout!", 1000)
-    }
+    const [modalVisible, setModalVisible] = useState(false)
 
     const data = [
         {
@@ -38,10 +36,79 @@ function BankSoal({navigation}) {
             score: 100
         },
     ]
+
+    const addOnData = [
+        {
+            category: "Category 1",
+            description: "deskripsi",
+            price: 200000
+        },
+        {
+            category: "Category 2",
+            description: "deskripsi",
+            price: 210000
+        },
+        {
+            category: "Category 2",
+            description: "deskripsi",
+            price: 210000
+        },
+        {
+            category: "Category 2",
+            description: "deskripsi",
+            price: 210000
+        },
+        {
+            category: "Category 2",
+            description: "deskripsi",
+            price: 210000
+        },
+        {
+            category: "Category 2",
+            description: "deskripsi",
+            price: 210000
+        },
+        {
+            category: "Category 2",
+            description: "deskripsi",
+            price: 210000
+        },
+    ]
   
     return (
         <SafeAreaView style={globalStyles.container}>
             <StatusBar backgroundColor="#ccc" />
+
+            <Modal
+                animationType="slide"
+                visible={modalVisible}>
+                <View style={{...globalStyles.container}}>
+                    <View style={{padding:12, justifyContent:'space-between', flexDirection:'row', alignItems:'center'}}>
+                        <Text style={{fontSize:18, fontWeight:'bold', color:'#333'}}>Kategori</Text>
+                        <CustomButton text={"Close"} onPress={()=>setModalVisible(false)}/>
+                    </View>
+                    <FlatList data={addOnData} renderItem={({item, index}) => (
+                        <Pressable
+                            onPress={() => Alert.alert("Alert", "Apakah anda ingin membeli kategori ini?", [
+                                {
+                                    text: 'Tidak', 
+                                    onPress: () => {},
+                                    style: 'cancel'
+                                },
+                                {
+                                    text: 'Ya', 
+                                    onPress: () => {}
+                                },
+                            ])}>
+                            <View style={globalStyles.card}>
+                                <Text>{item.category}</Text>
+                                <Text>{item.description}</Text>
+                                <Text>{item.price}</Text>
+                            </View>
+                        </Pressable>    
+                    )} />
+                </View>
+            </Modal>
 
             <View
             style={{
@@ -59,11 +126,9 @@ function BankSoal({navigation}) {
                         </View>
                     </Pressable>    
                 )} />
-
-                
             </View>
 
-            <FAB buttonColor="#333" iconTextColor="#fff" onClickAction={() => {ToastAndroid.show("FAB pressed", 1000)}} visible={true} />
+            <FAB buttonColor="#333" iconTextColor="#fff" onClickAction={() => setModalVisible(true)} visible={true} />
             
         </SafeAreaView>
     );

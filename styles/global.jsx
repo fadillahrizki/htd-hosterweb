@@ -18,8 +18,7 @@ export const globalStyles = StyleSheet.create({
         backgroundColor: '#333',
         paddingHorizontal:24,
         paddingVertical:12,
-        borderRadius:10,  
-        width:'100%',
+        borderRadius:10, 
     },
     buttonDisabled: {
         backgroundColor: '#ccc',
