@@ -2,6 +2,7 @@
 import React, {useState} from 'react';
 import {
     Dimensions,
+  Image,
   SafeAreaView,
   ScrollView,
   Text,
@@ -37,6 +38,9 @@ function Home({navigation}) {
                     gap: 12,
                     flex:1
                 }}> 
+                    
+                    <Image source={require('../assets/logo.png')} style={{alignSelf:'center', width:150, height:150}} />
+
                     <Text
                         style={{
                             fontSize: 24,

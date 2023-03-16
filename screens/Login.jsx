@@ -21,6 +21,7 @@ import { Formik } from 'formik';
 import { StatusBar } from 'expo-status-bar';
 
 import { API_URL } from '@env'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Login({navigation}) {
   const [message, setMessage] = useState('');
@@ -52,7 +53,9 @@ function Login({navigation}) {
       const res = await axios.post(API_URL+'/login', values)
       console.log(res)
       setIsError(false)
+      AsyncStorage.setItem("token", res.data)
       Alert.alert("Berhasil", "Anda Berhasil Login!")
+      navigation.navigate('Home')
     } catch (error) {
       setIsError(true)
       console.log(error);
