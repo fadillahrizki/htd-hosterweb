@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Dimensions,
   Image,
@@ -16,14 +16,28 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import { globalStyles } from '../styles/global';
 import CustomButton from '../components/CustomButton';
 import { StatusBar } from 'expo-status-bar';
-import { API_URL } from '@env'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getProfile } from '../api/ApiManager';
 
 function Home({navigation}) {
     const isDarkMode = useColorScheme() === 'dark';
+    const [profile, setProfile] = useState({})
 
     const handleLogout = () => {
         ToastAndroid.show("Logout!", 1000)
+        AsyncStorage.clear()
+        navigation.replace('Login')
     }
+
+    useEffect(()=>{
+
+        const created = async () => {
+            setProfile(await getProfile())
+        }
+
+        created()
+
+    },[])
   
     return (
         <SafeAreaView style={globalStyles.container}>
@@ -47,7 +61,7 @@ function Home({navigation}) {
                             fontWeight: 'bold',
                             textAlign: 'center',
                         }}>
-                        User Baru bos
+                        {profile?.name}
                     </Text>
 
                     <CustomButton text={'Edit Profile'} onPress={()=>navigation.push('EditProfile')} />

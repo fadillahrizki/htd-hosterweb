@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Alert,
   FlatList,
@@ -18,6 +18,7 @@ import CustomButton from '../components/CustomButton';
 import { StatusBar } from 'expo-status-bar';
 import { API_URL } from '@env'
 import FAB from 'react-native-fab';
+import { getBankSoal } from '../api/ApiManager';
 
 function BankSoal({navigation}) {
     const isDarkMode = useColorScheme() === 'dark';
@@ -74,6 +75,13 @@ function BankSoal({navigation}) {
             price: 210000
         },
     ]
+
+    useEffect(()=>{
+        const created = async () => {
+            await getBankSoal()
+        }
+        created()
+    },[])
   
     return (
         <SafeAreaView style={globalStyles.container}>
@@ -82,7 +90,7 @@ function BankSoal({navigation}) {
             <Modal
                 animationType="slide"
                 visible={modalVisible}>
-                <View style={{...globalStyles.container}}>
+                <SafeAreaView style={{...globalStyles.container}}>
                     <View style={{padding:12, justifyContent:'space-between', flexDirection:'row', alignItems:'center'}}>
                         <Text style={{fontSize:18, fontWeight:'bold', color:'#333'}}>Kategori</Text>
                         <CustomButton text={"Close"} onPress={()=>setModalVisible(false)}/>
@@ -107,7 +115,7 @@ function BankSoal({navigation}) {
                             </View>
                         </Pressable>    
                     )} />
-                </View>
+                </SafeAreaView>
             </Modal>
 
             <View

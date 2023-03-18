@@ -34,6 +34,14 @@ function DetailBankSoal({navigation}) {
             jawaban:"Jawaban"
         },
     ]
+
+    const handleChangeJawaban = (value) => {
+        
+    }
+
+    const handleSave = (value) => {
+        
+    }
   
     return (
         <SafeAreaView style={globalStyles.container}>
@@ -44,16 +52,12 @@ function DetailBankSoal({navigation}) {
                     paddingVertical:12
                 }}> 
                     <FlatList data={data} renderItem={({item, index}) => (
-                        <Pressable
-                            onPress={() => {
-                                ToastAndroid.show(item.judul, 1000)
-                            }}>
-                            <View style={globalStyles.card}>
-                                <Text>{item.judul}</Text>
-                                <Text>{item.deskripsi}</Text>
-                                <TextInput style={globalStyles.input} placeholder="Jawaban..."/>
-                            </View>
-                        </Pressable>    
+                        <View style={globalStyles.card}>
+                            <Text>{item.judul}</Text>
+                            <Text>{item.deskripsi}</Text>
+                            <TextInput style={globalStyles.input} onChangeText={handleChangeJawaban} placeholder="Jawaban..."/>
+                            <CustomButton text={"Save"} onPress={handleSave}/>
+                        </View>   
                     )} />
                     
                 </View>

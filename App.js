@@ -8,14 +8,17 @@ import Home from './screens/Home';
 import Login from './screens/Login';
 import Register from './screens/Register';
 import Transaksi from './screens/Transaksi';
+import { useEffect, useState } from 'react';
+import Splash from './screens/Splash';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home" screenOptions={{title:'HosterWeb', headerTitleAlign:'center'}}>
-        <Stack.Screen name="Login" component={Login}/>
+      <Stack.Navigator initialRouteName={"Splash"} screenOptions={{title:'HosterWeb', headerTitleAlign:'center'}}>
+        <Stack.Screen name="Splash" component={Splash} options={{headerShown: false}}/>
+        <Stack.Screen name="Login" component={Login} options={{headerShown: false}}/>
         <Stack.Screen name="Register" component={Register}/>
         <Stack.Screen name="EditProfile" component={EditProfile} />
         <Stack.Screen name="Home" component={Home}/>

@@ -15,7 +15,7 @@ export const globalStyles = StyleSheet.create({
         borderRadius:10,
     },
     buttonContainer: {
-        backgroundColor: '#333',
+        backgroundColor: '#EF4E32',
         paddingHorizontal:24,
         paddingVertical:12,
         borderRadius:10, 
@@ -46,6 +46,8 @@ export const globalStyles = StyleSheet.create({
         shadowRadius:2,
         marginHorizontal:12,
         marginVertical:8,
-        gap:8
+        gap:8,
+        flexDirection:'column',
+        gap:12
     },
 })
