@@ -1,29 +1,23 @@
-/* eslint-disable prettier/prettier */
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
-  Alert,
-  Dimensions,
-  Image,
-  SafeAreaView,
+  Alert, SafeAreaView,
   ScrollView,
   Text,
   TextInput,
   useColorScheme,
-  View,
+  View
 } from 'react-native';
-
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-
-import { globalStyles } from '../styles/global';
-import * as ImagePicker from "expo-image-picker";
-import * as yup from 'yup'
-import { Formik } from 'formik';
-import CustomButton from '../components/CustomButton';
-import { StatusBar } from 'expo-status-bar';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { getProfile, postProfile } from '../api/ApiManager';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from "expo-image-picker";
+import { StatusBar } from 'expo-status-bar';
+import { Formik } from 'formik';
+import { TouchableOpacity } from 'react-native';
 import ImageLoad from 'react-native-image-placeholder';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import * as yup from 'yup';
+import { getProfile, postProfile } from '../api/ApiManager';
+import CustomButton from '../components/CustomButton';
+import { Color, globalStyles } from '../styles/global';
 
 const EditProfileSchema = yup.object({
   nama: yup.string().required(),
@@ -126,12 +120,11 @@ function EditProfile({navigation}) {
 
   return (
     <SafeAreaView style={globalStyles.container}>
-      <StatusBar backgroundColor="#ccc" />
+      <StatusBar backgroundColor={Color.Background} />
       <ScrollView>
         <KeyboardAwareScrollView extraHeight={120}>
         <View
           style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
             padding: 24,
             display: 'flex',
             flexDirection: 'column',
@@ -158,7 +151,7 @@ function EditProfile({navigation}) {
                 <TextInput
                   style={globalStyles.input}
                   placeholder="Nama..."
-                  placeholderTextColor={'#333'}
+                  placeholderTextColor={Color.Black}
                   onChangeText={handleChange('nama')} 
                   onBlur={handleBlur('nama')}
                   returnKeyType="next"
@@ -173,7 +166,7 @@ function EditProfile({navigation}) {
                 <TextInput
                   ref={passwordRef}
                   style={globalStyles.input}
-                  placeholderTextColor={'#333'} 
+                  placeholderTextColor={Color.Black} 
                   value={values.username}
                   editable={false}
                 />
@@ -184,7 +177,7 @@ function EditProfile({navigation}) {
                   ref={passwordRef}
                   style={globalStyles.input}
                   placeholder="Password..."
-                  placeholderTextColor={'#333'}
+                  placeholderTextColor={Color.Black}
                   onChangeText={handleChange('password')} 
                   onBlur={handleBlur('password')} 
                   value={values.password}
@@ -201,7 +194,7 @@ function EditProfile({navigation}) {
                   ref={addressRef}
                   style={globalStyles.input}
                   placeholder="Alamat..."
-                  placeholderTextColor={'#333'}
+                  placeholderTextColor={Color.Black}
                   onChangeText={handleChange('alamat')} 
                   onBlur={handleBlur('alamat')} 
                   returnKeyType="next"
@@ -217,7 +210,7 @@ function EditProfile({navigation}) {
                   ref={phoneRef}
                   style={globalStyles.input}
                   placeholder="No.HP/WA..."
-                  placeholderTextColor={'#333'}
+                  placeholderTextColor={Color.Black}
                   onChangeText={handleChange('phone')} 
                   onBlur={handleBlur('phone')} 
                   value={values.phone}
@@ -226,9 +219,16 @@ function EditProfile({navigation}) {
 
                 <Text style={{...globalStyles.errorText, display: (errors.phone && touched.phone) ? 'flex' : 'none' }}>{  errors.phone}</Text>
 
-                <ImageLoad source={{uri: photo?.uri ?? profile?.pic_url}} borderRadius={8} style={{width:150, height:150, display: (photo != null || profile.pic_url) ? 'flex' : 'none'}} resizeMode={'cover'}/>
+                <TouchableOpacity onPress={selectFile} style={{width:150, height:150}}>
+                  {
+                    (photo != null || profile.pic_url) ?
+                    <ImageLoad source={{uri: photo?.uri ?? profile?.pic_url}} borderRadius={8} style={{width:150, height:150}} resizeMode={'cover'}/> :
+                    <ImageLoad source={require('../assets/placeholder.jpg')} borderRadius={8} style={{width:150, height:150}} resizeMode={'cover'}/>
+                  }
+                </TouchableOpacity>
 
-                <CustomButton text={photo || profile?.pic_url ? 'Change Photo' : 'Select Photo'} onPress={selectFile} style={{alignSelf: 'flex-start'}}/>
+                <Text style={{...globalStyles.errorText, display: (photo == null && !profile.pic_url) ? 'flex' : 'none' }}>Pilih gambar terlebih dahulu!</Text>
+                
                 <CustomButton text={'Edit Profile'} onPress={handleSubmit} disabled={errors.nama || errors.password || errors.alamat || errors.phone} isLoading={isSending} />
 
               </View>

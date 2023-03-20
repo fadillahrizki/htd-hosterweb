@@ -1,26 +1,22 @@
-/* eslint-disable prettier/prettier */
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import {
-  Alert,
-  Image,
-  SafeAreaView,
+  Alert, SafeAreaView,
   ScrollView,
   Text,
   TextInput,
   useColorScheme,
-  View,
+  View
 } from 'react-native';
-
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-
-import { globalStyles } from '../styles/global';
 import * as ImagePicker from "expo-image-picker";
-import * as yup from 'yup'
-import { Formik } from 'formik';
-import CustomButton from '../components/CustomButton';
 import { StatusBar } from 'expo-status-bar';
+import { Formik } from 'formik';
+import { TouchableOpacity } from 'react-native';
+import ImageLoad from 'react-native-image-placeholder';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import * as yup from 'yup';
 import { postRegister } from '../api/ApiManager';
+import CustomButton from '../components/CustomButton';
+import { Color, globalStyles } from '../styles/global';
 
 const RegisterSchema = yup.object({
   nama: yup.string().required(),
@@ -47,9 +43,7 @@ function Register({navigation}) {
       let res = await ImagePicker.launchImageLibraryAsync({
         quality: 1,
       });
-      console.log(res)
       setPhoto(res.assets[0])
-      console.log(photo)
     } catch (err) {
       console.log(err)
       setPhoto(null)
@@ -73,45 +67,49 @@ function Register({navigation}) {
 
     try {
       const res = await postRegister(formData)
-      console.log(res)
       Alert.alert("Berhasil", "Anda Berhasil Register!")
+      setIsSending(false)
+      return true
     } catch (error) {
       console.log(error)
+
       if (error.response) {
         console.log(error.response.data.message)
       } else if (error.request) {
-        console.log(error.request);
+        console.log(error.request)
       } else {
-        console.log('Error', error.message);
-        // setErrorMessage(error.message)
+        console.log('Error', error.message)
       }
 
       Alert.alert("Gagal", "Anda Gagal Register!")
+
+      setIsSending(false)
+      return false
     }
-    setIsSending(false)
   }
 
   return (
     <SafeAreaView style={globalStyles.container}>
-      <StatusBar backgroundColor="#ccc" />
+      <StatusBar backgroundColor={Color.Background} />
       <ScrollView>
         <KeyboardAwareScrollView extraHeight={120}>
         <View
           style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
             padding: 24,
             display: 'flex',
             flexDirection: 'column',
             gap: 12,
           }}>
           
-          <ImageLoad source={require('../assets/logo.png')} style={{alignSelf:'center', width:150, height:150}} />
+          <ImageLoad source={require('../assets/logo.png')} style={{alignSelf:'center', width:100, height:100}} />
 
           <Formik
             initialValues={{nama:'', username: '', password: '', alamat: '', phone: ''}}
             validationSchema={RegisterSchema}
-            onSubmit={async (values)=>{
-              handleRegister(values)
+            onSubmit={async (values, {resetForm})=>{
+              if(await handleRegister(values)) {
+                resetForm()
+              }
             }}
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
@@ -126,7 +124,7 @@ function Register({navigation}) {
                 <TextInput
                   style={globalStyles.input}
                   placeholder="Nama..."
-                  placeholderTextColor={'#333'}
+                  placeholderTextColor={Color.Black}
                   onChangeText={handleChange('nama')} 
                   onBlur={handleBlur('nama')} 
                   returnKeyType="next"
@@ -142,7 +140,7 @@ function Register({navigation}) {
                   ref={usernameRef}
                   style={globalStyles.input}
                   placeholder="Username..."
-                  placeholderTextColor={'#333'}
+                  placeholderTextColor={Color.Black}
                   onChangeText={handleChange('username')} 
                   onBlur={handleBlur('username')} 
                   returnKeyType="next"
@@ -158,7 +156,7 @@ function Register({navigation}) {
                   ref={passwordRef}
                   style={globalStyles.input}
                   placeholder="Password..."
-                  placeholderTextColor={'#333'}
+                  placeholderTextColor={Color.Black}
                   onChangeText={handleChange('password')} 
                   onBlur={handleBlur('password')} 
                   value={values.password}
@@ -175,7 +173,7 @@ function Register({navigation}) {
                   ref={addressRef}
                   style={globalStyles.input}
                   placeholder="Alamat..."
-                  placeholderTextColor={'#333'}
+                  placeholderTextColor={Color.Black}
                   onChangeText={handleChange('alamat')} 
                   onBlur={handleBlur('alamat')} 
                   returnKeyType="next"
@@ -191,7 +189,7 @@ function Register({navigation}) {
                   ref={phoneRef}
                   style={globalStyles.input}
                   placeholder="No.HP/WA..."
-                  placeholderTextColor={'#333'}
+                  placeholderTextColor={Color.Black}
                   onChangeText={handleChange('phone')} 
                   onBlur={handleBlur('phone')} 
                   value={values.phone}
@@ -200,11 +198,19 @@ function Register({navigation}) {
 
                 <Text style={{...globalStyles.errorText, display: (errors.phone && touched.phone) ? 'flex' : 'none' }}>{  errors.phone}</Text>
 
-                <ImageLoad source={{uri: photo?.uri}} borderRadius={8} style={{width:150, height:150, display: photo != null ? 'flex' : 'none'}} resizeMode={'cover'}/>
+                <TouchableOpacity onPress={selectFile} style={{width:150, height:150}}>
+                  {
+                    photo != null ?
+                    <ImageLoad source={{uri: photo?.uri}} borderRadius={8} style={{width:150, height:150}} resizeMode={'cover'}/> :
+                    <ImageLoad source={require('../assets/placeholder.jpg')} borderRadius={8} style={{width:150, height:150}} resizeMode={'cover'}/>
+                  }
+                </TouchableOpacity>
 
-                <CustomButton text={photo ? 'Change Photo' : 'Select Photo'} onPress={selectFile} style={{alignSelf: 'flex-start'}}/>
+                <Text style={{...globalStyles.errorText, display: photo == null ? 'flex' : 'none' }}>Pilih gambar terlebih dahulu!</Text>
+
                 <CustomButton text={'Register'} onPress={handleSubmit} disabled={errors.nama || errors.username || errors.password || errors.alamat || errors.phone || photo == null} isLoading={isSending} />
-                <CustomButton text={'Login'} onPress={()=>navigation.replace('Login')} />
+                <Text style={{textAlign:'center'}}>Sudah punya akun?</Text>
+                <CustomButton text={'Login'} type={2} onPress={()=>navigation.replace('Login')} />
 
               </View>
             )}

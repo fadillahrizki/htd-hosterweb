@@ -1,31 +1,19 @@
-import axios from 'axios';
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
-  Alert,
-  Button,
-  Dimensions,
-  Image,
-  KeyboardAvoidingView,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  useColorScheme,
-  View,
+  Alert, Dimensions,
+  Image, SafeAreaView,
+  ScrollView, Text,
+  TextInput, View
 } from 'react-native';
-
-import Carousel from 'react-native-snap-carousel'
-import { globalStyles } from '../styles/global';
-import CustomButton from '../components/CustomButton';
-import { Formik } from 'formik';
 import { StatusBar } from 'expo-status-bar';
-
-import { API_URL } from '@env'
+import { Formik } from 'formik';
+import Carousel from 'react-native-snap-carousel';
+import CustomButton from '../components/CustomButton';
+import { Color, globalStyles } from '../styles/global';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ImageLoad from 'react-native-image-placeholder';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { getSlideShow, postLogin } from '../api/ApiManager';
-import ImageLoad from 'react-native-image-placeholder';
 
 function Login({navigation}) {
   const [message, setMessage] = useState('');
@@ -71,7 +59,7 @@ function Login({navigation}) {
   return (
     <SafeAreaView style={globalStyles.container}>
       
-      <StatusBar backgroundColor="#ccc" />
+      <StatusBar backgroundColor={Color.Background} />
       <ScrollView>
         <KeyboardAwareScrollView extraHeight={120}>
           <View
@@ -111,14 +99,14 @@ function Login({navigation}) {
                   width:'100%'
                 }}>
 
-                  {/* <Text style={{display: isError ? 'flex' : 'none', ...globalStyles.errorText}}>Username / Password tidak sesuai!</Text> */}
+                  <Image source={require('../assets/logo.png')} style={{alignSelf:'center', width:100, height:100}} />
 
                   <Text>Username</Text>
 
                   <TextInput 
                     style={globalStyles.input} 
                     placeholder="Username..." 
-                    placeholderTextColor={"#333"} 
+                    placeholderTextColor={Color.Black} 
                     onChangeText={handleChange('username')} 
                     onBlur={handleBlur('username')} 
                     returnKeyType="next"
@@ -131,7 +119,7 @@ function Login({navigation}) {
                     ref={passwordRef}
                     style={globalStyles.input} 
                     placeholder="Password..." 
-                    placeholderTextColor={"#333"} 
+                    placeholderTextColor={Color.Black} 
                     onChangeText={handleChange('password')} 
                     onBlur={handleBlur('password')} 
                     secureTextEntry={true}
@@ -142,8 +130,8 @@ function Login({navigation}) {
               )}
               
             </Formik>
-              
-            <CustomButton text={'Register'} style={{width:'100%'}} onPress={()=>navigation.replace('Register')}/>
+            <Text style={{textAlign:'center'}}>Belum punya akun?</Text>
+            <CustomButton text={'Register'} type={2} style={{width:'100%'}} onPress={()=>navigation.replace('Register')}/>
           </View>
         </KeyboardAwareScrollView>
       </ScrollView>

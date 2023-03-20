@@ -1,24 +1,16 @@
-/* eslint-disable prettier/prettier */
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-    Alert,
-    Dimensions,
-  Image,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  ToastAndroid,
-  useColorScheme,
-  View,
+    Alert, Image,
+    SafeAreaView, Text,
+    ToastAndroid,
+    useColorScheme,
+    View
 } from 'react-native';
-
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-
-import { globalStyles } from '../styles/global';
-import CustomButton from '../components/CustomButton';
-import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StatusBar } from 'expo-status-bar';
 import { getProfile } from '../api/ApiManager';
+import CustomButton from '../components/CustomButton';
+import { Color, globalStyles } from '../styles/global';
 
 function Home({navigation}) {
     const isDarkMode = useColorScheme() === 'dark';
@@ -51,11 +43,10 @@ function Home({navigation}) {
   
     return (
         <SafeAreaView style={globalStyles.container}>
-            <StatusBar backgroundColor="#ccc" />
+            <StatusBar backgroundColor={Color.Background} />
             
             <View
                 style={{
-                    backgroundColor: isDarkMode ? Colors.black : Colors.white,
                     padding: 24,
                     flexDirection: 'column',
                     justifyContent:'center',

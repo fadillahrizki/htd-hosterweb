@@ -1,31 +1,49 @@
 import { Dimensions, StyleSheet } from "react-native";
 
+export const Color = {
+    Primary: '#EF4E32',
+    Secondary: '#cccccc',
+    Background: '#f3f3f3',
+    White: '#ffffff',
+    Black: '#333333'
+}
+
 export const globalStyles = StyleSheet.create({
     container:{
         flex: 1,
         height: Dimensions.get('window').height,
-        backgroundColor: '#fff'
+        backgroundColor: Color.Background
     },  
     input: {
         width: '100%',
         borderWidth:1,
-        borderColor:'#333',
+        borderColor: Color.Secondary,
+        backgroundColor: Color.White,
         paddingHorizontal:20,
         paddingVertical:10,
-        borderRadius:10,
     },
     buttonContainer: {
-        backgroundColor: '#EF4E32',
+        backgroundColor: Color.Primary,
+        paddingHorizontal:24,
+        paddingVertical:12
+    },
+    buttonContainerSecondary: {
         paddingHorizontal:24,
         paddingVertical:12,
-        borderRadius:10, 
+        backgroundColor: Color.White,
+        borderWidth:1,
+        borderColor: Color.Secondary
     },
     buttonDisabled: {
-        backgroundColor: '#ccc',
+        backgroundColor: Color.Secondary,
     },
     buttonText:{
         textAlign: 'center',
-        color: '#fff',
+        color: Color.White,
+    },
+    buttonTextSecondary:{
+        textAlign: 'center',
+        color: Color.Black,
     },
     image:{
         height:350,
@@ -37,17 +55,17 @@ export const globalStyles = StyleSheet.create({
     },
     card:{
         padding:12,
-        borderRadius:6,
         elevation:3,
-        backgroundColor:'#fff',
+        backgroundColor:Color.White,
         shadowOffset:{width:1,height:1},
-        shadowColor:"#333",
+        shadowColor: Color.Black,
         shadowOpacity:0.3,
         shadowRadius:2,
         marginHorizontal:12,
         marginVertical:8,
         gap:8,
         flexDirection:'column',
-        gap:12
+        gap:12,
+        borderRadius: 6
     },
 })

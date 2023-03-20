@@ -1,30 +1,18 @@
-/* eslint-disable prettier/prettier */
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     ActivityIndicator,
     Alert,
-  FlatList,
-  Image,
-  Modal,
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  ToastAndroid,
-  useColorScheme,
-  View,
+    FlatList, Modal, SafeAreaView, Text, TouchableOpacity, useColorScheme,
+    View
 } from 'react-native';
-
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-
-import { globalStyles } from '../styles/global';
-import { StatusBar } from 'expo-status-bar';
-import { getPicture, postPicture } from '../api/ApiManager';
-import * as ImagePicker from "expo-image-picker";
-import FAB from 'react-native-fab';
-import CustomButton from '../components/CustomButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from "expo-image-picker";
+import { StatusBar } from 'expo-status-bar';
+import FAB from 'react-native-fab';
 import ImageLoad from 'react-native-image-placeholder';
+import { getPicture, postPicture } from '../api/ApiManager';
+import CustomButton from '../components/CustomButton';
+import { Color, globalStyles } from '../styles/global';
 
 function PhotoManagement({navigation}) {
     const isDarkMode = useColorScheme() === 'dark';
@@ -34,7 +22,6 @@ function PhotoManagement({navigation}) {
     const [modalVisible, setModalVisible] = useState(false)
     const [isUploading, setIsUploading] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
-
 
     useEffect(()=>{
         getData()
@@ -60,9 +47,7 @@ function PhotoManagement({navigation}) {
             let res = await ImagePicker.launchImageLibraryAsync({
                 quality: 1,
             });
-            console.log(res)
             setPhoto(res.assets[0])
-            console.log(photo)
         } catch (err) {
             console.log(err)
             setPhoto(null)
@@ -86,7 +71,6 @@ function PhotoManagement({navigation}) {
                 AsyncStorage.clear()
                 navigation.replace('Login')
             }
-            console.log(res)
             Alert.alert("Berhasil", "Anda Berhasil Upload!")
             getData()
             setModalVisible(false)
@@ -117,7 +101,7 @@ function PhotoManagement({navigation}) {
   
     return (
         <SafeAreaView style={globalStyles.container}>
-            <StatusBar backgroundColor="#ccc" />
+            <StatusBar backgroundColor={Color.Background} />
 
             <Modal
                 animationType="slide"
@@ -125,19 +109,25 @@ function PhotoManagement({navigation}) {
                 <SafeAreaView style={{...globalStyles.container}}>
                     <View
                     style={{
-                        backgroundColor: isDarkMode ? Colors.black : Colors.white,
                         padding:12,
                         flexDirection:'column',
                         gap:12
                     }}> 
                         <View style={{padding:12, justifyContent:'space-between', flexDirection:'row', alignItems:'center'}}>
-                            <Text style={{fontSize:18, fontWeight:'bold', color:'#333'}}>Upload Gambar</Text>
+                            <Text style={{fontSize:18, fontWeight:'bold', color:Color.Black}}>Upload Gambar</Text>
                             <CustomButton text={"Close"} onPress={()=>setModalVisible(false)}/>
                         </View>
-                    
-                        <ImageLoad source={{uri: photo?.uri}} borderRadius={8} style={{width:150, height:150, display: photo != null ? 'flex' : 'none'}} resizeMode={'cover'}/>
 
-                        <CustomButton text={photo ? 'Change Photo' : 'Select Photo'} onPress={selectFile} />
+                        <TouchableOpacity onPress={selectFile} style={{width:150, height:150}}>
+                        {
+                            photo != null ?
+                            <ImageLoad source={{uri: photo?.uri}} borderRadius={8} style={{width:150, height:150}} resizeMode={'cover'}/> :
+                            <ImageLoad source={require('../assets/placeholder.jpg')} borderRadius={8} style={{width:150, height:150}} resizeMode={'cover'}/>
+                        }
+                        </TouchableOpacity>
+
+                        <Text style={{...globalStyles.errorText, display: photo == null ? 'flex' : 'none' }}>Pilih gambar terlebih dahulu!</Text>
+
                         <CustomButton text={'Upload'} onPress={handleUpload} isLoading={isUploading}/>
                     </View>
                 </SafeAreaView>
@@ -145,7 +135,6 @@ function PhotoManagement({navigation}) {
 
             <View
             style={{
-                backgroundColor: isDarkMode ? Colors.black : Colors.white,
                 padding:12,
                 flexDirection:'column',
                 justifyContent:'center',
@@ -154,14 +143,13 @@ function PhotoManagement({navigation}) {
             }}> 
                 {
                     isLoading ? 
-                    <ActivityIndicator size={'large'} color={"#333"}/> : 
+                    <ActivityIndicator size={'large'} color={Color.Black}/> : 
                     <FlatList data={data} renderItem={({item, index}) => <ImageLoad source={{uri: item.file_url}} borderRadius={8} style={{height:200, marginVertical: 6}} resizeMode={'cover'}/>} />
                 }
                 
-                
             </View>
 
-            <FAB buttonColor="#EF4E32" iconTextColor="#fff" onClickAction={() => setModalVisible(true)} visible={true} />
+            <FAB buttonColor={Color.Primary} iconTextColor={Color.White} onClickAction={() => setModalVisible(true)} visible={true} />
         </SafeAreaView>
     );
 }
