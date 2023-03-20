@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
+    Alert,
   FlatList,
   Pressable,
   SafeAreaView,
@@ -15,21 +16,30 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 import { globalStyles } from '../styles/global';
 import { StatusBar } from 'expo-status-bar';
+import { getTransaction } from '../api/ApiManager';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Transaksi({navigation}) {
     const isDarkMode = useColorScheme() === 'dark';
-    const data = [
-        {
-            category: "Category 1",
-            price: 20000000,
-            status: "AKTIF"
-        },
-        {
-            category: "Category 2",
-            price: 100000,
-            status: "AKTIF"
-        },
-    ]
+
+    const [data,setData] = useState([])
+
+    useEffect(()=>{
+        const created = async () => {
+            try{
+                const res = await getTransaction()
+                setData(res)
+                console.log(res)
+            }catch(error){
+                if(error.response.status == 403) {
+                    Alert.alert("Gagal!", "Token Expired")
+                    AsyncStorage.clear()
+                    navigation.replace('Login')
+                }
+            }
+        }
+        created()
+    },[])
   
     return (
         <SafeAreaView style={globalStyles.container}>
@@ -42,11 +52,11 @@ function Transaksi({navigation}) {
             }}> 
                 <FlatList data={data} renderItem={({item, index}) => (
                     <Pressable
-                        onPress={() => navigation.push('DetailTransaksi')}>
-                        <View style={globalStyles.card}>
-                            <Text>{item.category}</Text>
-                            <Text>{item.price}</Text>
-                            <Text>{item.status}</Text>
+                        onPress={() => navigation.push('DetailTransaksi', item)}>
+                        <View style={globalStyles.card}>    
+                            <Text>{item.category.name}</Text>
+                            <Text>Harga: Rp. {parseFloat(item.amount).toLocaleString('id-ID')}</Text>
+                            <Text>Status: {item.status}</Text>
                         </View>
                     </Pressable>    
                 )} />

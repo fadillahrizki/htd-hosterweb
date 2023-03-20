@@ -22,10 +22,11 @@ import CustomButton from '../components/CustomButton';
 import { StatusBar } from 'expo-status-bar';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { getProfile, postProfile } from '../api/ApiManager';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import ImageLoad from 'react-native-image-placeholder';
 
 const EditProfileSchema = yup.object({
   nama: yup.string().required(),
-  username: yup.string().required(),
   alamat: yup.string().required(),
   phone: yup.string().required()
 })
@@ -36,8 +37,8 @@ function EditProfile({navigation}) {
 
   const [photo, setPhoto] = useState(null);
   const [profile, setProfile] = useState({})
+  const [isSending, setIsSending] = useState(false)
 
-  const usernameRef = useRef()
   const passwordRef = useRef()
   const addressRef = useRef()
   const phoneRef = useRef()
@@ -45,7 +46,16 @@ function EditProfile({navigation}) {
   useEffect(()=>{
 
       const created = async () => {
-          setProfile(await getProfile())
+        try{
+          const res = await getProfile()
+          setProfile(res)
+        }catch(error){
+            if(error.response.status == 403) {
+                Alert.alert("Gagal!", "Token Expired")
+                AsyncStorage.clear()
+                navigation.replace('Login')
+            }
+        }
       }
 
       created()
@@ -68,12 +78,13 @@ function EditProfile({navigation}) {
 
   
   const handleEditProfile = async (values) => {
+
+    setIsSending(true)
     
     const formData = new FormData();
     formData.append('name', values.nama);
     formData.append('address', values.alamat);
     formData.append('phone', values.phone);
-    formData.append('username', values.username);
     
     if(values.password){
       formData.append('password', values.password)
@@ -92,6 +103,11 @@ function EditProfile({navigation}) {
       console.log(res)
       Alert.alert("Berhasil", "Anda Berhasil Edit Profile!")
     } catch (error) {
+      if(error.response.status == 403) {
+          Alert.alert("Gagal!", "Token Expired")
+          AsyncStorage.clear()
+          navigation.replace('Login')
+      }
       console.log(error)
       if (error.response) {
         console.log(error.response.data.message)
@@ -104,6 +120,8 @@ function EditProfile({navigation}) {
 
       Alert.alert("Gagal", "Anda Gagal Edit Profile!")
     }
+
+    setIsSending(false)
   }
 
   return (
@@ -144,7 +162,7 @@ function EditProfile({navigation}) {
                   onChangeText={handleChange('nama')} 
                   onBlur={handleBlur('nama')}
                   returnKeyType="next"
-                  onSubmitEditing={() => usernameRef.current.focus()}
+                  onSubmitEditing={() => passwordRef.current.focus()}
                   value={values.nama}
                 />
 
@@ -153,18 +171,12 @@ function EditProfile({navigation}) {
                 <Text>Username</Text>
 
                 <TextInput
-                  ref={usernameRef}
+                  ref={passwordRef}
                   style={globalStyles.input}
-                  placeholder="Username..."
-                  placeholderTextColor={'#333'}
-                  onChangeText={handleChange('username')} 
-                  onBlur={handleBlur('username')}
-                  returnKeyType="next"
-                  onSubmitEditing={() => passwordRef.current.focus()}
+                  placeholderTextColor={'#333'} 
                   value={values.username}
+                  editable={false}
                 />
-
-                <Text style={{...globalStyles.errorText, display: (errors.username && touched.username) ? 'flex' : 'none' }}>{ errors.username}</Text>
 
                 <Text>Password</Text>
 
@@ -214,10 +226,10 @@ function EditProfile({navigation}) {
 
                 <Text style={{...globalStyles.errorText, display: (errors.phone && touched.phone) ? 'flex' : 'none' }}>{  errors.phone}</Text>
 
-                <Image source={{uri: photo?.uri ?? profile?.pic_url}} style={{width:150, height:150, display: (photo != null || profile.pic_url) ? 'flex' : 'none'}}/>
+                <ImageLoad source={{uri: photo?.uri ?? profile?.pic_url}} borderRadius={8} style={{width:150, height:150, display: (photo != null || profile.pic_url) ? 'flex' : 'none'}} resizeMode={'cover'}/>
 
-                <CustomButton text={photo || profile?.pic_url ? 'Change Photo' : 'Select Photo'} onPress={selectFile} />
-                <CustomButton text={'Edit Profile'} onPress={handleSubmit} disabled={errors.nama || errors.username || errors.password || errors.alamat || errors.phone} />
+                <CustomButton text={photo || profile?.pic_url ? 'Change Photo' : 'Select Photo'} onPress={selectFile} style={{alignSelf: 'flex-start'}}/>
+                <CustomButton text={'Edit Profile'} onPress={handleSubmit} disabled={errors.nama || errors.password || errors.alamat || errors.phone} isLoading={isSending} />
 
               </View>
             )}

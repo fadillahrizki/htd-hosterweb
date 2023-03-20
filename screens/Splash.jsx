@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useEffect } from "react"
-import { Text, View } from "react-native"
+import { ActivityIndicator, Text, View } from "react-native"
 
 export default function Splash({navigation}){
     useEffect(()=>{
@@ -18,7 +18,7 @@ export default function Splash({navigation}){
     
     return (
         <View style={{alignItems:'center', justifyContent:'center', flex:1}}>
-            <Text>Loading...</Text>
+            <ActivityIndicator color={'#333'} size={'large'}/>
         </View>
     )
 }

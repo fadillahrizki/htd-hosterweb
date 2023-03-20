@@ -18,71 +18,71 @@ import CustomButton from '../components/CustomButton';
 import { StatusBar } from 'expo-status-bar';
 import { API_URL } from '@env'
 import FAB from 'react-native-fab';
-import { getBankSoal } from '../api/ApiManager';
+import { getBankSoal, getCategory, postBuyCategory } from '../api/ApiManager';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function BankSoal({navigation}) {
     const isDarkMode = useColorScheme() === 'dark';
 
     const [modalVisible, setModalVisible] = useState(false)
-
-    const data = [
-        {
-            judul: "Judul 1",
-            exp: "2022-02-02",
-            score: 200
-        },
-        {
-            judul: "Judul 2",
-            exp: "2022-02-01",
-            score: 100
-        },
-    ]
-
-    const addOnData = [
-        {
-            category: "Category 1",
-            description: "deskripsi",
-            price: 200000
-        },
-        {
-            category: "Category 2",
-            description: "deskripsi",
-            price: 210000
-        },
-        {
-            category: "Category 2",
-            description: "deskripsi",
-            price: 210000
-        },
-        {
-            category: "Category 2",
-            description: "deskripsi",
-            price: 210000
-        },
-        {
-            category: "Category 2",
-            description: "deskripsi",
-            price: 210000
-        },
-        {
-            category: "Category 2",
-            description: "deskripsi",
-            price: 210000
-        },
-        {
-            category: "Category 2",
-            description: "deskripsi",
-            price: 210000
-        },
-    ]
+    const [isLoading, setIsLoading] = useState(false)
+    const [data, setData] = useState([])
+    const [categories, setCategories] = useState([])
 
     useEffect(()=>{
-        const created = async () => {
-            await getBankSoal()
-        }
-        created()
+        getData()
     },[])
-  
+    
+    const getData = async () => {
+        setIsLoading(true)
+        try{
+            const res = await getBankSoal()
+            setData(res)
+            console.log(res)
+        }catch(error){
+            if(error.response.status == 403) {
+                Alert.alert("Gagal!", "Token Expired")
+                AsyncStorage.clear()
+                navigation.replace('Login')
+            }
+        }
+        setIsLoading(false)
+    }
+
+    const getCategories = async () => {
+        setIsLoading(true)
+        try{
+            const res = await getCategory()
+            setCategories(res.data)
+            COS
+        }catch(error){
+            console.log(error)
+            if(error.response.status == 403) {
+                Alert.alert("Gagal!", "Token Expired")
+                AsyncStorage.clear()
+                navigation.replace('Login')
+            }
+        }
+        setIsLoading(false)
+    }
+
+    const handleBuy = async (item) => {
+        console.log(item)
+        try{
+            const res = await postBuyCategory({id:item.id})
+            console.log(res)
+            Alert.alert("Berhasil!", "Berhasil membeli kategori!")
+            getCategories()
+            setModalVisible(false)
+        }catch(error){
+            if(error.response.status == 403) {
+                Alert.alert("Gagal!", "Token Expired")
+                AsyncStorage.clear()
+                navigation.replace('Login')
+            }
+        }
+    }
+
     return (
         <SafeAreaView style={globalStyles.container}>
             <StatusBar backgroundColor="#ccc" />
@@ -92,10 +92,10 @@ function BankSoal({navigation}) {
                 visible={modalVisible}>
                 <SafeAreaView style={{...globalStyles.container}}>
                     <View style={{padding:12, justifyContent:'space-between', flexDirection:'row', alignItems:'center'}}>
-                        <Text style={{fontSize:18, fontWeight:'bold', color:'#333'}}>Kategori</Text>
+                        <Text style={{fontSize:18, fontWeight:'bold', color:'#333'}}>List Kategori</Text>
                         <CustomButton text={"Close"} onPress={()=>setModalVisible(false)}/>
                     </View>
-                    <FlatList data={addOnData} renderItem={({item, index}) => (
+                    <FlatList data={categories} renderItem={({item, index}) => (
                         <Pressable
                             onPress={() => Alert.alert("Alert", "Apakah anda ingin membeli kategori ini?", [
                                 {
@@ -105,13 +105,15 @@ function BankSoal({navigation}) {
                                 },
                                 {
                                     text: 'Ya', 
-                                    onPress: () => {}
+                                    onPress: () => {
+                                        handleBuy(item)
+                                    }
                                 },
                             ])}>
                             <View style={globalStyles.card}>
-                                <Text>{item.category}</Text>
-                                <Text>{item.description}</Text>
-                                <Text>{item.price}</Text>
+                                <Text>{item.name}</Text>
+                                <Text>Harga: Rp. {parseFloat(item.price).toLocaleString('id-ID')}</Text>
+                                <Text>Masa berlaku: {item.active_time} Day{parseFloat(item.active_time) > 1 ? 's' : ''}</Text>
                             </View>
                         </Pressable>    
                     )} />
@@ -126,17 +128,20 @@ function BankSoal({navigation}) {
             }}> 
                 <FlatList data={data} renderItem={({item, index}) => (
                     <Pressable
-                        onPress={() => navigation.push('DetailBankSoal')}>
+                        onPress={() => navigation.push('DetailBankSoal', {id:item.id})}>
                         <View style={globalStyles.card}>
-                            <Text>{item.judul}</Text>
-                            <Text>Exp at : {item.exp}</Text>
-                            <Text>Score : {item.score}</Text>
+                            <Text>{item.category.name}</Text>
+                            <Text>Score: {item.total_score}</Text>
+                            <Text>Exp at: {new Date(item.expired_at).toLocaleDateString("id-ID")}</Text>
                         </View>
                     </Pressable>    
                 )} />
             </View>
 
-            <FAB buttonColor="#333" iconTextColor="#fff" onClickAction={() => setModalVisible(true)} visible={true} />
+            <FAB buttonColor="#EF4E32" iconTextColor="#fff" onClickAction={() => {
+                getCategories()
+                setModalVisible(true)
+            }} visible={true} />
             
         </SafeAreaView>
     );

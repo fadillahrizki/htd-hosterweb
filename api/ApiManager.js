@@ -27,7 +27,7 @@ export const getProfile = async () => {
 }
 
 export const postProfile = async (body) => {
-    return await axios.post(API_URL+'/profile', body, {
+    return await axios.post(API_URL+'/profile/update', body, {
         headers:{
             'Authorization': 'Bearer '+await AsyncStorage.getItem('token'),
             'Content-Type':'multipart/form-data',
@@ -54,7 +54,7 @@ export const getBankSoalDetail = async (id) => {
 }
 
 export const postBankSoalAnswer = async (id, body) => {
-    return await axios.get(API_URL+'/proprietaries/update?id='+id, body,{
+    return await axios.post(API_URL+'/proprietaries/update?id='+id, body,{
         headers:{
             'Authorization': 'Bearer '+await AsyncStorage.getItem('token'),
             'Content-Type':'multipart/form-data',
@@ -78,6 +78,16 @@ export const getTransactionDetail = async (id) => {
     })).data.data
 }
 
+export const postTransaction = async (id, body) => {
+    return await axios.post(API_URL+'/transactions/update?id='+id, body, {
+        headers:{
+            'Authorization': 'Bearer '+await AsyncStorage.getItem('token'),
+            'Content-Type':'multipart/form-data',
+        }
+    })
+}
+
+
 export const getCategory = async () => {
     return (await axios.get(API_URL+'/categories/get', {
         headers:{
@@ -87,7 +97,7 @@ export const getCategory = async () => {
 }
 
 export const postBuyCategory = async (body) => {
-    return await axios.get(API_URL+'/categories/buy', body, {
+    return await axios.post(API_URL+'/categories/buy', body, {
         headers:{
             'Authorization': 'Bearer '+await AsyncStorage.getItem('token'),
             'Content-Type':'multipart/form-data',
@@ -95,8 +105,8 @@ export const postBuyCategory = async (body) => {
     })
 }
 
-export const getPicture = async (body) => {
-    return (await axios.get(API_URL+'/pictures/get', body, {
+export const getPicture = async () => {
+    return (await axios.get(API_URL+'/pictures/get', {
         headers:{
             'Authorization': 'Bearer '+await AsyncStorage.getItem('token'),
         }
@@ -104,7 +114,7 @@ export const getPicture = async (body) => {
 }
 
 export const postPicture = async (body) => {
-    return await axios.get(API_URL+'/pictures/upload', body, {
+    return await axios.post(API_URL+'/pictures/upload', body, {
         headers:{
             'Authorization': 'Bearer '+await AsyncStorage.getItem('token'),
             'Content-Type':'multipart/form-data',

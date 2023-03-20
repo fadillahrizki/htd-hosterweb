@@ -25,12 +25,14 @@ import { API_URL } from '@env'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { getSlideShow, postLogin } from '../api/ApiManager';
+import ImageLoad from 'react-native-image-placeholder';
 
 function Login({navigation}) {
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const [isError, setIsError] = useState(false)
+  const [isSending, setIsSending] = useState(false)
 
   const passwordRef = useRef()
 
@@ -45,6 +47,7 @@ function Login({navigation}) {
   },[])
 
   const handleLogin = async (values) => {
+    setIsSending(true)
     try {
       await AsyncStorage.setItem("token", await postLogin(values))
       Alert.alert("Berhasil", "Anda Berhasil Login!")
@@ -62,6 +65,7 @@ function Login({navigation}) {
       }
       Alert.alert("Gagal", "Anda Gagal Login!")
     }
+    setIsSending(false)
   };
 
   return (
@@ -86,7 +90,7 @@ function Login({navigation}) {
               renderItem={({item,index}) => {
                 return (
                   <View>
-                    <Image source={{uri: item.file_url}} style={globalStyles.image}/>
+                    <ImageLoad source={{uri: item.file_url}} style={globalStyles.image} resizeMode={'cover'}/>
                   </View>
                 )
               }}
@@ -133,13 +137,13 @@ function Login({navigation}) {
                     secureTextEntry={true}
                     value={values.password}/>
 
-                  <CustomButton text={'Login'} onPress={handleSubmit}/>
+                  <CustomButton text={'Login'} onPress={handleSubmit} isLoading={isSending}/>
                 </View>
               )}
               
             </Formik>
               
-            <CustomButton text={'Register'} style={{width:'100%'}} onPress={()=>navigation.replace('Register')} />
+            <CustomButton text={'Register'} style={{width:'100%'}} onPress={()=>navigation.replace('Register')}/>
           </View>
         </KeyboardAwareScrollView>
       </ScrollView>

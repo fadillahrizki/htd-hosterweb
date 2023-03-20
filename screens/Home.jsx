@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
 import {
+    Alert,
     Dimensions,
   Image,
   SafeAreaView,
@@ -32,12 +33,21 @@ function Home({navigation}) {
     useEffect(()=>{
 
         const created = async () => {
-            setProfile(await getProfile())
+            try{
+                const res = await getProfile()
+                setProfile(res)
+            }catch(error){
+                if(error.response.status == 403) {
+                    Alert.alert("Gagal!", "Token Expired")
+                    AsyncStorage.clear()
+                    navigation.replace('Login')
+                }
+            }
         }
 
         created()
 
-    },[])
+    },[profile])
   
     return (
         <SafeAreaView style={globalStyles.container}>
@@ -66,7 +76,7 @@ function Home({navigation}) {
 
                     <CustomButton text={'Edit Profile'} onPress={()=>navigation.push('EditProfile')} />
                     <CustomButton text={'Bank Soal'} onPress={()=>navigation.push('BankSoal')} />
-                    <CustomButton text={'Manajemen Foto'} onPress={()=>{}} />
+                    <CustomButton text={'Manajemen Foto'} onPress={()=>navigation.push('PhotoManagement')} />
                     <CustomButton text={'Transaksi'} onPress={()=>navigation.push('Transaksi')} />
                     <CustomButton text={'Keluar'} onPress={handleLogout} />
                 

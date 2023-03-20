@@ -13,14 +13,12 @@ import {
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-import axios from 'axios';
 import { globalStyles } from '../styles/global';
 import * as ImagePicker from "expo-image-picker";
 import * as yup from 'yup'
 import { Formik } from 'formik';
 import CustomButton from '../components/CustomButton';
 import { StatusBar } from 'expo-status-bar';
-import { API_URL } from '@env'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { postRegister } from '../api/ApiManager';
 
@@ -37,6 +35,7 @@ function Register({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
 
   const [photo, setPhoto] = useState(null);
+  const [isSending, setIsSending] = useState(false)
 
   const usernameRef = useRef()
   const passwordRef = useRef()
@@ -58,6 +57,7 @@ function Register({navigation}) {
   };
 
   const handleRegister = async (values) => {
+    setIsSending(true)
     
     const formData = new FormData();
     formData.append('name', values.nama);
@@ -88,6 +88,7 @@ function Register({navigation}) {
 
       Alert.alert("Gagal", "Anda Gagal Register!")
     }
+    setIsSending(false)
   }
 
   return (
@@ -104,7 +105,7 @@ function Register({navigation}) {
             gap: 12,
           }}>
           
-          <Image source={require('../assets/logo.png')} style={{alignSelf:'center', width:150, height:150}} />
+          <ImageLoad source={require('../assets/logo.png')} style={{alignSelf:'center', width:150, height:150}} />
 
           <Formik
             initialValues={{nama:'', username: '', password: '', alamat: '', phone: ''}}
@@ -199,10 +200,10 @@ function Register({navigation}) {
 
                 <Text style={{...globalStyles.errorText, display: (errors.phone && touched.phone) ? 'flex' : 'none' }}>{  errors.phone}</Text>
 
-                <Image source={{uri: photo?.uri}} style={{width:150, height:150, display: photo != null ? 'flex' : 'none'}}/>
+                <ImageLoad source={{uri: photo?.uri}} borderRadius={8} style={{width:150, height:150, display: photo != null ? 'flex' : 'none'}} resizeMode={'cover'}/>
 
-                <CustomButton text={photo ? 'Change Photo' : 'Select Photo'} onPress={selectFile} />
-                <CustomButton text={'Register'} onPress={handleSubmit} disabled={errors.nama || errors.username || errors.password || errors.alamat || errors.phone || photo == null} />
+                <CustomButton text={photo ? 'Change Photo' : 'Select Photo'} onPress={selectFile} style={{alignSelf: 'flex-start'}}/>
+                <CustomButton text={'Register'} onPress={handleSubmit} disabled={errors.nama || errors.username || errors.password || errors.alamat || errors.phone || photo == null} isLoading={isSending} />
                 <CustomButton text={'Login'} onPress={()=>navigation.replace('Login')} />
 
               </View>

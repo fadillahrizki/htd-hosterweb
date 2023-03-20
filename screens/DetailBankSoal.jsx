@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Pressable,
@@ -18,29 +18,69 @@ import { globalStyles } from '../styles/global';
 import CustomButton from '../components/CustomButton';
 import { StatusBar } from 'expo-status-bar';
 import { API_URL } from '@env'
+import { getBankSoalDetail, postBankSoalAnswer } from '../api/ApiManager';
+import { Alert } from 'react-native';
+import FAB from 'react-native-fab';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-function DetailBankSoal({navigation}) {
+function DetailBankSoal({navigation,route}) {
     const isDarkMode = useColorScheme() === 'dark';
+    const [isLoading, setIsLoading] = useState(false)
+    const [isSending, setIsSending] = useState(false)
+    const [data, setData] = useState({})
+    const {id} = route.params
 
-    const data = [
-        {
-            judul: "Judul 1",
-            deskripsi: "blablablablasdasdnasdas",
-            jawaban:"Jawaban"
-        },
-        {
-            judul: "Judul 2",
-            deskripsi: "blablablablasdasdnasdas",
-            jawaban:"Jawaban"
-        },
-    ]
-
-    const handleChangeJawaban = (value) => {
-        
+    useEffect(()=>{
+        getData()
+    },[])
+    
+    const getData = async () => {
+        setIsLoading(true)
+        try{
+            const res = await getBankSoalDetail(id)
+            setData(res)
+            console.log(res)
+        }catch(error){
+            if(error.response.status == 403) {
+                Alert.alert("Gagal!", "Token Expired")
+                AsyncStorage.clear()
+                navigation.replace('Login')
+            }
+        }
+        setIsLoading(false)
     }
 
-    const handleSave = (value) => {
-        
+    const handleChangeAnswer = (item, value) => {
+        data.questions.map(question=>{
+            if(question.id == item.id)
+                question.answer = value
+        })
+    }
+
+    const handleSave = async () => {
+        setIsSending(true)
+        try{
+            const res = await postBankSoalAnswer(data.id, {questions:data.questions})
+            console.log(res)
+            Alert.alert("Berhasil!", "Berhasil Save Jawaban!")
+        }catch(error){
+            console.log(error)
+            if(error.response.status == 403) {
+                Alert.alert("Gagal!", "Token Expired")
+                AsyncStorage.clear()
+                navigation.replace('Login')
+            }
+
+            if (error.response) {
+                console.log(error.response.data.message)
+            } else if (error.request) {
+                console.log(error.request);
+            } else {
+                console.log('Error', error.message);
+            }
+            // Alert.alert("Gagal!", "Gagal Save Jawaban!")
+        }
+        setIsSending(false)
     }
   
     return (
@@ -50,17 +90,22 @@ function DetailBankSoal({navigation}) {
                 style={{
                     backgroundColor: isDarkMode ? Colors.black : Colors.white,
                     paddingVertical:12
-                }}> 
-                    <FlatList data={data} renderItem={({item, index}) => (
-                        <View style={globalStyles.card}>
-                            <Text>{item.judul}</Text>
-                            <Text>{item.deskripsi}</Text>
-                            <TextInput style={globalStyles.input} onChangeText={handleChangeJawaban} placeholder="Jawaban..."/>
-                            <CustomButton text={"Save"} onPress={handleSave}/>
-                        </View>   
-                    )} />
+                }}>  
+
+                <Text style={{alignSelf:'center', fontSize: 18, marginBottom:12}}>{data?.category?.name}</Text>
+
+                <FlatList data={data.questions} renderItem={({item, index}) => (
+                    <View style={globalStyles.card}>
+                        <Text>{item.title}</Text>
+                        <Text>{item.description}</Text>
+                        <TextInput style={globalStyles.input} defaultValue={item.answer} onChangeText={value => handleChangeAnswer(item, value)} placeholder="Jawaban..."/>
+                    </View>   
+                )} />
                     
-                </View>
+            </View>
+            
+            <CustomButton text={"Simpan"} onPress={handleSave} style={{position:'absolute', bottom:12, alignSelf:'center'}} isLoading={isSending}/>
+
         </SafeAreaView>
     );
 }
