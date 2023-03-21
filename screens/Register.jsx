@@ -17,11 +17,11 @@ import CustomButton from '../components/CustomButton';
 import { Color, globalStyles } from '../styles/global';
 
 const RegisterSchema = yup.object({
-  name: yup.string().required(),
-  username: yup.string().required(),
-  password: yup.string().required(),
-  address: yup.string().required(),
-  phone: yup.string().required()
+  name: yup.string().required('Nama harus diisi!'),
+  username: yup.string().required('Username harus diisi!'),
+  password: yup.string().required('Password harus diisi!'),
+  address: yup.string().required('Alamat harus diisi!'),
+  phone: yup.string().required('No Hp harus diisi!')
 })
 
 
@@ -125,10 +125,11 @@ function Register({navigation}) {
                   onBlur={handleBlur('name')} 
                   returnKeyType="next"
                   onSubmitEditing={() => usernameRef.current.focus()}
-                  defaultValue={values.name}
+                  blurOnSubmit={false}
+                  value={values.name}
                 />
 
-                <Text style={{...globalStyles.errorText, display: (errors.name && touched.name) ? 'flex' : 'none' }}>{errors.name}</Text>
+                {(errors.name && touched.name) ? <Text style={globalStyles.errorText}>{errors.name}</Text> : ''}
 
                 <Text>Username</Text>
 
@@ -141,10 +142,11 @@ function Register({navigation}) {
                   onBlur={handleBlur('username')} 
                   returnKeyType="next"
                   onSubmitEditing={() => passwordRef.current.focus()}
-                  defaultValue={values.username}
+                  blurOnSubmit={false}
+                  value={values.username}
                 />
 
-                <Text style={{...globalStyles.errorText, display: (errors.username && touched.username) ? 'flex' : 'none' }}>{ errors.username}</Text>
+                {(errors.username && touched.username) ? <Text style={globalStyles.errorText}>{errors.username}</Text> : ''}
 
                 <Text>Password</Text>
 
@@ -155,13 +157,14 @@ function Register({navigation}) {
                   placeholderTextColor={Color.Black}
                   onChangeText={handleChange('password')} 
                   onBlur={handleBlur('password')} 
-                  defaultValue={values.password}
+                  value={values.password}
                   returnKeyType="next"
                   onSubmitEditing={() => addressRef.current.focus()}
+                  blurOnSubmit={false}
                   secureTextEntry={true}
                 />
 
-                <Text style={{...globalStyles.errorText, display: (errors.password && touched.password) ? 'flex' : 'none' }}>{errors.password}</Text>
+                {(errors.password && touched.password) ? <Text style={globalStyles.errorText}>{errors.password}</Text> : ''}
 
                 <Text>Alamat</Text>
 
@@ -174,10 +177,11 @@ function Register({navigation}) {
                   onBlur={handleBlur('address')} 
                   returnKeyType="next"
                   onSubmitEditing={() => phoneRef.current.focus()}
-                  defaultValue={values.address}
+                  blurOnSubmit={false}
+                  value={values.address}
                 />
 
-                <Text style={{...globalStyles.errorText, display: (errors.address && touched.address) ? 'flex' : 'none' }}>{errors.address}</Text>
+                {(errors.address && touched.address) ? <Text style={globalStyles.errorText}>{errors.address}</Text> : ''}
 
                 <Text>No.HP/WA</Text>
 
@@ -186,13 +190,13 @@ function Register({navigation}) {
                   style={globalStyles.input}
                   placeholder="No.HP/WA..."
                   placeholderTextColor={Color.Black}
-                  onChangeText={handleChange('phone')} 
-                  onBlur={handleBlur('phone')} 
-                  defaultValue={values.phone}
+                  onChangeText={handleChange('phone')}
+                  onBlur={handleBlur('phone')}
+                  value={values.phone}
                   keyboardType={'phone-pad'}
                 />
 
-                <Text style={{...globalStyles.errorText, display: (errors.phone && touched.phone) ? 'flex' : 'none' }}>{errors.phone}</Text>
+                {(errors.phone && touched.phone) ? <Text style={globalStyles.errorText}>{errors.phone}</Text> : ''}
 
                 <TouchableOpacity onPress={selectFile} style={{width:150, height:150}}>
                   {
@@ -202,7 +206,7 @@ function Register({navigation}) {
                   }
                 </TouchableOpacity>
 
-                <Text style={{...globalStyles.errorText, display: photo == null ? 'flex' : 'none' }}>Pilih gambar terlebih dahulu!</Text>
+                {photo == null ? <Text style={globalStyles.errorText}>Pilih gambar terlebih dahulu!</Text> : ''}
 
                 <CustomButton text={'Register'} onPress={handleSubmit} disabled={(errors.name || errors.username || errors.password || errors.address || errors.phone || photo == null) || (!touched.name && !touched.username && !touched.password && !touched.address && !touched.phone)} isLoading={isSending} />
                 <Text style={{textAlign:'center'}}>Sudah punya akun?</Text>

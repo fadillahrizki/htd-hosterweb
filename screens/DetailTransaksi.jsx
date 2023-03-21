@@ -94,17 +94,22 @@ function DetailTransaksi({route, navigation}) {
                     }
                     </TouchableOpacity>
 
-                    <Text style={{...globalStyles.errorText, display: (bukti == null && !item.file_url) ? 'flex' : 'none' }}>Pilih gambar terlebih dahulu!</Text>
+                    {(bukti == null && !item.file_url) ? <Text style={globalStyles.errorText}>Pilih gambar terlebih dahulu!</Text> : ''}
 
-                    <CustomButton text={bukti || bukti?.pic_url ? 'Ganti Bukti' : 'Pilih Bukti'} onPress={selectFile}  style={{alignSelf:'flex-start', display: item.file ? 'none' : 'flex'}}/>
-
-                    <CustomButton text={"Upload"} onPress={handleUpload} isLoading={isUploading} disabled={!bukti} style={{display: item.file ? 'none' : 'flex'}}/>
+                    {
+                        !item.file ? (
+                            <View>
+                                <CustomButton text={bukti || bukti?.pic_url ? 'Ganti Bukti' : 'Pilih Bukti'} onPress={selectFile}  style={{alignSelf:'flex-start'}}/>
+                                <CustomButton text={"Upload"} onPress={handleUpload} isLoading={isUploading} disabled={!bukti}/>
+                            </View>
+                        ) : ''
+                    }
                     
                 </View>
 
             </ScrollView>
         </SafeAreaView>
     );
-}
+} 
 
 export default DetailTransaksi;

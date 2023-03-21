@@ -109,6 +109,7 @@ function Login({navigation}) {
                     onBlur={handleBlur('username')} 
                     returnKeyType="next"
                     onSubmitEditing={() => passwordRef.current.focus()}
+                    blurOnSubmit={false}
                     value={values.username}/>
 
                   <Text>Password</Text>

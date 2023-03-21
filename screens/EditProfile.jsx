@@ -18,9 +18,9 @@ import CustomButton from '../components/CustomButton';
 import { Color, globalStyles } from '../styles/global';
 
 const EditProfileSchema = yup.object({
-  name: yup.string().required(),
-  address: yup.string().required(),
-  phone: yup.string().required()
+  name: yup.string().required('Nama harus diisi!'),
+  address: yup.string().required('Alamat harus diisi!'),
+  phone: yup.string().required('No Hp harus diisi!')
 })
 
 
@@ -154,10 +154,11 @@ function EditProfile({navigation}) {
                   onBlur={handleBlur('name')}
                   returnKeyType="next"
                   onSubmitEditing={() => passwordRef.current.focus()}
-                  defaultValue={values.name}
+                  blurOnSubmit={false}
+                  value={values.name}
                 />
 
-                <Text style={{...globalStyles.errorText, display: (errors.name && touched.name) ? 'flex' : 'none' }}>{errors.name}</Text>
+                {(errors.name && touched.name) ? <Text style={globalStyles.errorText}>{errors.name}</Text> : ''}
 
                 <Text>Username</Text>
 
@@ -165,7 +166,7 @@ function EditProfile({navigation}) {
                   ref={passwordRef}
                   style={globalStyles.input}
                   placeholderTextColor={Color.Black} 
-                  defaultValue={values.username}
+                  value={values.username}
                   editable={false}
                 />
 
@@ -177,9 +178,10 @@ function EditProfile({navigation}) {
                   placeholder="Password..."
                   placeholderTextColor={Color.Black}
                   onChangeText={handleChange('password')}
-                  defaultValue={values.password}
+                  value={values.password}
                   returnKeyType="next"
                   onSubmitEditing={() => addressRef.current.focus()}
+                  blurOnSubmit={false}
                   secureTextEntry={true}
                 />
 
@@ -194,10 +196,11 @@ function EditProfile({navigation}) {
                   onBlur={handleBlur('address')} 
                   returnKeyType="next"
                   onSubmitEditing={() => phoneRef.current.focus()}
-                  defaultValue={values.address}
+                  blurOnSubmit={false}
+                  value={values.address}
                 />
 
-                { errors.address && touched.address ? <Text style={globalStyles.errorText}>{errors.address}</Text> : '' }
+                {(errors.address && touched.address) ? <Text style={globalStyles.errorText}>{errors.address}</Text> : '' }
 
                 <Text>No.HP/WA</Text>
 
@@ -208,11 +211,11 @@ function EditProfile({navigation}) {
                   placeholderTextColor={Color.Black}
                   onChangeText={handleChange('phone')} 
                   onBlur={handleBlur('phone')} 
-                  defaultValue={values.phone}
+                  value={values.phone}
                   keyboardType={'phone-pad'}
                 />
 
-                { errors.phone && touched.phone ? <Text style={globalStyles.errorText}>{errors.phone}</Text> : ''}
+                {(errors.phone && touched.phone) ? <Text style={globalStyles.errorText}>{errors.phone}</Text> : ''}
 
                 <TouchableOpacity onPress={selectFile} style={{width:150, height:150}}>
                   {
@@ -222,7 +225,7 @@ function EditProfile({navigation}) {
                   }
                 </TouchableOpacity>
 
-                { photo == null && !profile.pic_url ? <Text style={{...globalStyles.errorText}}>Pilih gambar terlebih dahulu!</Text> : ''}
+                {(photo == null && !profile.pic_url) ? <Text style={globalStyles.errorText}>Pilih gambar terlebih dahulu!</Text> : ''}
                 
                 <CustomButton text={'Edit Profile'} onPress={handleSubmit} disabled={(errors.name || errors.address || errors.phone) || (!touched.name && !touched.address && !touched.phone)} isLoading={isSending} />
 

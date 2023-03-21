@@ -126,7 +126,7 @@ function PhotoManagement({navigation}) {
                         }
                         </TouchableOpacity>
 
-                        <Text style={{...globalStyles.errorText, display: photo == null ? 'flex' : 'none' }}>Pilih gambar terlebih dahulu!</Text>
+                        {(photo == null) ? <Text style={globalStyles.errorText}>Pilih gambar terlebih dahulu!</Text> : ''}
 
                         <CustomButton text={'Upload'} onPress={handleUpload} isLoading={isUploading}/>
                     </View>
@@ -135,7 +135,7 @@ function PhotoManagement({navigation}) {
 
             <View
             style={{
-                padding:12,
+                padding:12,  
                 flexDirection:'column',
                 justifyContent:'center',
                 gap:12,
