@@ -10,15 +10,16 @@ import PhotoManagement from './screens/PhotoManagement';
 import Register from './screens/Register';
 import Splash from './screens/Splash';
 import Transaksi from './screens/Transaksi';
+import { Color } from './styles/global';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={"Splash"} screenOptions={{title:'HosterWeb', headerTitleAlign:'center'}}>
+      <Stack.Navigator initialRouteName={"Splash"} screenOptions={{title:'HosterWeb', headerTitleAlign:'center', headerTintColor: Color.White, headerStyle:{backgroundColor:Color.Primary}}}>
         <Stack.Screen name="Splash" component={Splash} options={{headerShown: false}}/>
-        <Stack.Screen name="Login" component={Login}/>
+        <Stack.Screen name="Login" component={Login} options={{headerShown: false}}/>
         <Stack.Screen name="PhotoManagement" component={PhotoManagement}/>
         <Stack.Screen name="Register" component={Register}/>
         <Stack.Screen name="EditProfile" component={EditProfile} />

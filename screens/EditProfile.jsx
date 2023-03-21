@@ -1,17 +1,15 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from "expo-image-picker";
+import { StatusBar } from 'expo-status-bar';
+import { Formik } from 'formik';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert, SafeAreaView,
   ScrollView,
   Text,
-  TextInput,
-  useColorScheme,
+  TextInput, TouchableOpacity, useColorScheme,
   View
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as ImagePicker from "expo-image-picker";
-import { StatusBar } from 'expo-status-bar';
-import { Formik } from 'formik';
-import { TouchableOpacity } from 'react-native';
 import ImageLoad from 'react-native-image-placeholder';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as yup from 'yup';
@@ -20,8 +18,8 @@ import CustomButton from '../components/CustomButton';
 import { Color, globalStyles } from '../styles/global';
 
 const EditProfileSchema = yup.object({
-  nama: yup.string().required(),
-  alamat: yup.string().required(),
+  name: yup.string().required(),
+  address: yup.string().required(),
   phone: yup.string().required()
 })
 
@@ -76,8 +74,8 @@ function EditProfile({navigation}) {
     setIsSending(true)
     
     const formData = new FormData();
-    formData.append('name', values.nama);
-    formData.append('address', values.alamat);
+    formData.append('name', values.name);
+    formData.append('address', values.address);
     formData.append('phone', values.phone);
     
     if(values.password){
@@ -133,7 +131,7 @@ function EditProfile({navigation}) {
 
           <Formik
           enableReinitialize={true}
-            initialValues={{nama:profile?.name, username: profile?.username, password: '', alamat: profile?.address, phone: profile?.phone}}
+            initialValues={{name:profile?.name, username: profile?.username, password: '', address: profile?.address, phone: profile?.phone}}
             validationSchema={EditProfileSchema}
             onSubmit={(values)=>{
               handleEditProfile(values)
@@ -152,14 +150,14 @@ function EditProfile({navigation}) {
                   style={globalStyles.input}
                   placeholder="Nama..."
                   placeholderTextColor={Color.Black}
-                  onChangeText={handleChange('nama')} 
-                  onBlur={handleBlur('nama')}
+                  onChangeText={handleChange('name')} 
+                  onBlur={handleBlur('name')}
                   returnKeyType="next"
                   onSubmitEditing={() => passwordRef.current.focus()}
-                  value={values.nama}
+                  defaultValue={values.name}
                 />
 
-                <Text style={{...globalStyles.errorText, display: (errors.nama && touched.nama) ? 'flex' : 'none' }}>{errors.nama}</Text>
+                <Text style={{...globalStyles.errorText, display: (errors.name && touched.name) ? 'flex' : 'none' }}>{errors.name}</Text>
 
                 <Text>Username</Text>
 
@@ -167,7 +165,7 @@ function EditProfile({navigation}) {
                   ref={passwordRef}
                   style={globalStyles.input}
                   placeholderTextColor={Color.Black} 
-                  value={values.username}
+                  defaultValue={values.username}
                   editable={false}
                 />
 
@@ -178,15 +176,12 @@ function EditProfile({navigation}) {
                   style={globalStyles.input}
                   placeholder="Password..."
                   placeholderTextColor={Color.Black}
-                  onChangeText={handleChange('password')} 
-                  onBlur={handleBlur('password')} 
-                  value={values.password}
+                  onChangeText={handleChange('password')}
+                  defaultValue={values.password}
                   returnKeyType="next"
                   onSubmitEditing={() => addressRef.current.focus()}
                   secureTextEntry={true}
                 />
-
-                <Text style={{...globalStyles.errorText, display: (errors.password && touched.password) ? 'flex' : 'none' }}>{ errors.password}</Text>
 
                 <Text>Alamat</Text>
 
@@ -195,14 +190,14 @@ function EditProfile({navigation}) {
                   style={globalStyles.input}
                   placeholder="Alamat..."
                   placeholderTextColor={Color.Black}
-                  onChangeText={handleChange('alamat')} 
-                  onBlur={handleBlur('alamat')} 
+                  onChangeText={handleChange('address')} 
+                  onBlur={handleBlur('address')} 
                   returnKeyType="next"
                   onSubmitEditing={() => phoneRef.current.focus()}
-                  value={values.alamat}
+                  defaultValue={values.address}
                 />
 
-                <Text style={{...globalStyles.errorText, display: (errors.alamat && touched.alamat) ? 'flex' : 'none' }}>{ errors.alamat}</Text>
+                { errors.address && touched.address ? <Text style={globalStyles.errorText}>{errors.address}</Text> : '' }
 
                 <Text>No.HP/WA</Text>
 
@@ -213,11 +208,11 @@ function EditProfile({navigation}) {
                   placeholderTextColor={Color.Black}
                   onChangeText={handleChange('phone')} 
                   onBlur={handleBlur('phone')} 
-                  value={values.phone}
+                  defaultValue={values.phone}
                   keyboardType={'phone-pad'}
                 />
 
-                <Text style={{...globalStyles.errorText, display: (errors.phone && touched.phone) ? 'flex' : 'none' }}>{  errors.phone}</Text>
+                { errors.phone && touched.phone ? <Text style={globalStyles.errorText}>{errors.phone}</Text> : ''}
 
                 <TouchableOpacity onPress={selectFile} style={{width:150, height:150}}>
                   {
@@ -227,9 +222,9 @@ function EditProfile({navigation}) {
                   }
                 </TouchableOpacity>
 
-                <Text style={{...globalStyles.errorText, display: (photo == null && !profile.pic_url) ? 'flex' : 'none' }}>Pilih gambar terlebih dahulu!</Text>
+                { photo == null && !profile.pic_url ? <Text style={{...globalStyles.errorText}}>Pilih gambar terlebih dahulu!</Text> : ''}
                 
-                <CustomButton text={'Edit Profile'} onPress={handleSubmit} disabled={errors.nama || errors.password || errors.alamat || errors.phone} isLoading={isSending} />
+                <CustomButton text={'Edit Profile'} onPress={handleSubmit} disabled={(errors.name || errors.address || errors.phone) || (!touched.name && !touched.address && !touched.phone)} isLoading={isSending} />
 
               </View>
             )}

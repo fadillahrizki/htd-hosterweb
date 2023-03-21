@@ -1,3 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StatusBar } from 'expo-status-bar';
+import { Formik } from 'formik';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert, Dimensions,
@@ -5,15 +8,12 @@ import {
   ScrollView, Text,
   TextInput, View
 } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { Formik } from 'formik';
-import Carousel from 'react-native-snap-carousel';
-import CustomButton from '../components/CustomButton';
-import { Color, globalStyles } from '../styles/global';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import ImageLoad from 'react-native-image-placeholder';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Carousel from 'react-native-snap-carousel';
 import { getSlideShow, postLogin } from '../api/ApiManager';
+import CustomButton from '../components/CustomButton';
+import { Color, globalStyles } from '../styles/global';
 
 function Login({navigation}) {
   const [message, setMessage] = useState('');
@@ -38,20 +38,18 @@ function Login({navigation}) {
     setIsSending(true)
     try {
       await AsyncStorage.setItem("token", await postLogin(values))
-      Alert.alert("Berhasil", "Anda Berhasil Login!")
       navigation.replace('Home')
     } catch (error) {
       setIsError(true)
       console.log(error)
       if (error.response) {
         console.log(error.response.data.message)
-      } else if (error.request) {
-        console.log(error.request);
+        Alert.alert("Gagal", "Username/Password tidak sesuai!")
       } else {
         console.log('Error', error.message);
         setErrorMessage(error.message)
+        Alert.alert("Gagal", "Silahkan cek koneksi anda!")
       }
-      Alert.alert("Gagal", "Anda Gagal Login!")
     }
     setIsSending(false)
   };
@@ -78,7 +76,7 @@ function Login({navigation}) {
               renderItem={({item,index}) => {
                 return (
                   <View>
-                    <ImageLoad source={{uri: item.file_url}} style={globalStyles.image} resizeMode={'cover'}/>
+                    <ImageLoad source={{uri: item.file_url}} style={{height:200 }} resizeMode={'cover'}/>
                   </View>
                 )
               }}

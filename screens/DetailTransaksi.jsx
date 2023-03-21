@@ -1,14 +1,13 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from "expo-image-picker";
+import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import {
     Alert, SafeAreaView,
     ScrollView,
-    Text, useColorScheme,
+    Text, TouchableOpacity, useColorScheme,
     View
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as ImagePicker from "expo-image-picker";
-import { StatusBar } from 'expo-status-bar';
-import { TouchableOpacity } from 'react-native';
 import ImageLoad from 'react-native-image-placeholder';
 import { postTransaction } from '../api/ApiManager';
 import CustomButton from '../components/CustomButton';
@@ -87,7 +86,7 @@ function DetailTransaksi({route, navigation}) {
                     <Text>Masa berlaku: {item.category.active_time} Day{parseFloat(item.category.active_time) > 1 ? 's' : ''}</Text>
                     <Text>Status: {item.status}</Text>
 
-                    <TouchableOpacity onPress={selectFile} style={{width:150, height:150}}>
+                    <TouchableOpacity onPress={!item.file?selectFile:()=>{}} style={{width:150, height:150}}>
                     {
                         bukti != null || item.file ?
                         <ImageLoad source={{uri: item.file_url ?? bukti?.uri}} borderRadius={8} style={{width:150, height:150}} resizeMode={'cover'}/> :

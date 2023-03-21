@@ -45,10 +45,6 @@ export const globalStyles = StyleSheet.create({
         textAlign: 'center',
         color: Color.Black,
     },
-    image:{
-        height:350,
-        width: '100%',
-    },
     errorText:{
         color:'red',
         fontSize: 12

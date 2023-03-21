@@ -1,13 +1,12 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import {
     Alert, Image,
     SafeAreaView, Text,
-    ToastAndroid,
     useColorScheme,
     View
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StatusBar } from 'expo-status-bar';
 import { getProfile } from '../api/ApiManager';
 import CustomButton from '../components/CustomButton';
 import { Color, globalStyles } from '../styles/global';
@@ -17,7 +16,6 @@ function Home({navigation}) {
     const [profile, setProfile] = useState({})
 
     const handleLogout = () => {
-        ToastAndroid.show("Logout!", 1000)
         AsyncStorage.clear()
         navigation.replace('Login')
     }
