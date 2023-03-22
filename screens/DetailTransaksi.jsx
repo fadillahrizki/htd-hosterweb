@@ -20,6 +20,7 @@ function DetailTransaksi({route, navigation}) {
 
     const [bukti, setBukti] = useState(null)
     const [isUploading, setIsUploading] = useState(false)
+    const [isSuccess, setIsSuccess] = useState(false)
 
     const selectFile = async () => {
       try {
@@ -48,6 +49,7 @@ function DetailTransaksi({route, navigation}) {
             const res = await postTransaction(item.id, formData)
             console.log(res)
             Alert.alert("Berhasil", "Anda Berhasil Upload!")
+            setIsSuccess(true)
         } catch (error) {
             if(error.response.status == 403) {
                 Alert.alert("Gagal!", "Token Expired")
@@ -88,22 +90,15 @@ function DetailTransaksi({route, navigation}) {
 
                     <TouchableOpacity onPress={!item.file?selectFile:()=>{}} style={{width:150, height:150}}>
                     {
-                        bukti != null || item.file ?
-                        <ImageLoad source={{uri: item.file_url ?? bukti?.uri}} borderRadius={8} style={{width:150, height:150}} resizeMode={'cover'}/> :
+                        (bukti || item.file) ?
+                        <ImageLoad source={{uri: bukti?.uri ?? item.file_url}} borderRadius={8} style={{width:150, height:150}} resizeMode={'cover'}/> :
                         <ImageLoad source={require('../assets/placeholder.jpg')} borderRadius={8} style={{width:150, height:150}} resizeMode={'cover'}/>
                     }
                     </TouchableOpacity>
 
                     {(bukti == null && !item.file_url) ? <Text style={globalStyles.errorText}>Pilih gambar terlebih dahulu!</Text> : ''}
 
-                    {
-                        !item.file ? (
-                            <View>
-                                <CustomButton text={bukti || bukti?.pic_url ? 'Ganti Bukti' : 'Pilih Bukti'} onPress={selectFile}  style={{alignSelf:'flex-start'}}/>
-                                <CustomButton text={"Upload"} onPress={handleUpload} isLoading={isUploading} disabled={!bukti}/>
-                            </View>
-                        ) : ''
-                    }
+                    { (!item.file && !isSuccess) ? <CustomButton text={"Upload"} onPress={handleUpload} isLoading={isUploading} disabled={!bukti}/> : '' }
                     
                 </View>
 

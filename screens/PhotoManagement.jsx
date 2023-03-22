@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import {
-    ActivityIndicator,
-    Alert,
-    FlatList, Modal, SafeAreaView, Text, TouchableOpacity, useColorScheme,
-    View
-} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from "expo-image-picker";
 import { StatusBar } from 'expo-status-bar';
+import React, { useEffect, useState } from 'react';
+import {
+    Alert,
+    FlatList, Modal, RefreshControl, SafeAreaView, ScrollView, Text, TouchableOpacity, useColorScheme,
+    View
+} from 'react-native';
 import FAB from 'react-native-fab';
 import ImageLoad from 'react-native-image-placeholder';
 import { getPicture, postPicture } from '../api/ApiManager';
 import CustomButton from '../components/CustomButton';
+import NoData from '../components/NoData';
 import { Color, globalStyles } from '../styles/global';
 
 function PhotoManagement({navigation}) {
@@ -128,26 +128,24 @@ function PhotoManagement({navigation}) {
 
                         {(photo == null) ? <Text style={globalStyles.errorText}>Pilih gambar terlebih dahulu!</Text> : ''}
 
-                        <CustomButton text={'Upload'} onPress={handleUpload} isLoading={isUploading}/>
+                        <CustomButton text={'Upload'} onPress={handleUpload} disabled={!photo} isLoading={isUploading}/>
                     </View>
                 </SafeAreaView>
             </Modal>
 
-            <View
-            style={{
-                padding:12,  
-                flexDirection:'column',
-                justifyContent:'center',
-                gap:12,
-                flex:1
-            }}> 
+            <ScrollView
+                refreshControl={
+                    <RefreshControl refreshing={isLoading} onRefresh={getData} />
+                }
+                contentContainerStyle={{padding:12}}
+            > 
                 {
-                    isLoading ? 
-                    <ActivityIndicator size={'large'} color={Color.Black}/> : 
-                    <FlatList data={data} renderItem={({item, index}) => <ImageLoad source={{uri: item.file_url}} borderRadius={8} style={{height:200, marginVertical: 6}} resizeMode={'cover'}/>} />
+                    data?.length > 0 ?
+                    <FlatList data={data} renderItem={({item, index}) => <ImageLoad source={{uri: item.file_url}} borderRadius={8} style={{height:200, marginVertical: 6}} resizeMode={'cover'}/>} /> :
+                    <NoData />
                 }
                 
-            </View>
+            </ScrollView>
 
             <FAB buttonColor={Color.Primary} iconTextColor={Color.White} onClickAction={() => setModalVisible(true)} visible={true} />
         </SafeAreaView>
