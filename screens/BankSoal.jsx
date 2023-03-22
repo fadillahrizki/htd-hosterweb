@@ -5,9 +5,7 @@ import {
     Alert,
     FlatList,
     Modal,
-    Pressable, RefreshControl, SafeAreaView, ScrollView, Text,
-    useColorScheme,
-    View
+    Pressable, SafeAreaView, Text, View
 } from 'react-native';
 import FAB from 'react-native-fab';
 import { getBankSoal, getCategory, postBuyCategory } from '../api/ApiManager';
@@ -16,8 +14,6 @@ import NoData from '../components/NoData';
 import { Color, globalStyles } from '../styles/global';
 
 function BankSoal({navigation}) {
-    const isDarkMode = useColorScheme() === 'dark';
-
     const [modalVisible, setModalVisible] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [isCategoriesLoading, setIsCategoriesLoading] = useState(false)
@@ -86,62 +82,56 @@ function BankSoal({navigation}) {
                         <Text style={{fontSize:18, fontWeight:'bold', color:Color.Black}}>List Kategori</Text>
                         <CustomButton text={"Close"} onPress={()=>setModalVisible(false)}/>
                     </View>
-                    <ScrollView
-                        refreshControl={
-                            <RefreshControl refreshing={isCategoriesLoading} onRefresh={getCategories} />
-                        }
-                    >
-                        {
-                            categories?.length > 0 ?
-                            <FlatList data={categories} renderItem={({item, index}) => (
-                                <Pressable
-                                    onPress={() => Alert.alert("Alert", "Apakah anda ingin membeli kategori ini?", [
-                                        {
-                                            text: 'Tidak', 
-                                            onPress: () => {},
-                                            style: 'cancel'
-                                        },
-                                        {
-                                            text: 'Ya', 
-                                            onPress: () => {
-                                                handleBuy(item)
-                                            }
-                                        },
-                                    ])}>
-                                    <View style={globalStyles.card}>
-                                        <Text>{item.name}</Text>
-                                        <Text>Harga: Rp. {parseFloat(item.price).toLocaleString('id-ID')}</Text>
-                                        <Text>Masa berlaku: {item.active_time} Day{parseFloat(item.active_time) > 1 ? 's' : ''}</Text>
-                                    </View>
-                                </Pressable>    
-                            )} /> :
-                            <NoData/>
-                        }
-                    </ScrollView>
+                    <FlatList 
+                        contentContainerStyle={{paddingVertical:12}}
+                        refreshing={isCategoriesLoading}
+                        onRefresh={getCategories}
+                        ListEmptyComponent={<NoData />} 
+                        data={categories} 
+                        renderItem={({item}) => (
+                            <Pressable
+                                key={item.id}
+                                onPress={() => Alert.alert("Alert", "Apakah anda ingin membeli kategori ini?", [
+                                    {
+                                        text: 'Tidak', 
+                                        onPress: () => {},
+                                        style: 'cancel'
+                                    },
+                                    {
+                                        text: 'Ya', 
+                                        onPress: () => {
+                                            handleBuy(item)
+                                        }
+                                    },
+                                ])}>
+                                <View style={globalStyles.card}>
+                                    <Text>{item.name}</Text>
+                                    <Text>Harga: Rp. {parseFloat(item.price).toLocaleString('id-ID')}</Text>
+                                    <Text>Masa berlaku: {item.active_time} Day{parseFloat(item.active_time) > 1 ? 's' : ''}</Text>
+                                </View>
+                            </Pressable>    
+                        )} 
+                    />
                 </SafeAreaView>
             </Modal>
 
-            <ScrollView 
-                contentContainerStyle={{paddingVertical:12}} 
-                refreshControl={
-                    <RefreshControl refreshing={isLoading} onRefresh={getData} />
-                }
-            >
-                {
-                    data?.length > 0 ?
-                    <FlatList data={data} renderItem={({item, index}) => (
-                        <Pressable
-                            onPress={() => navigation.push('DetailBankSoal', {id:item.id})}>
-                            <View style={globalStyles.card}>
-                                <Text>{item.category.name}</Text>
-                                <Text>Score: {item.total_score}</Text>
-                                <Text>Exp at: {new Date(item.expired_at).toLocaleDateString("id-ID")}</Text>
-                            </View>
-                        </Pressable>    
-                    )} /> :
-                    <NoData/>
-                }
-            </ScrollView>
+            <FlatList 
+                contentContainerStyle={{paddingVertical:12}}
+                ListEmptyComponent={<NoData />}
+                refreshing={isLoading}
+                onRefresh={getData}
+                data={data} renderItem={({item}) => (
+                    <Pressable
+                        key={item.id}
+                        onPress={() => navigation.push('DetailBankSoal', {id:item.id})}>
+                        <View style={globalStyles.card}>
+                            <Text>{item.category.name}</Text>
+                            <Text>Score: {item.total_score}</Text>
+                            <Text>Exp at: {new Date(item.expired_at).toLocaleDateString("id-ID")}</Text>
+                        </View>
+                    </Pressable>    
+                )}
+            />
 
             <FAB buttonColor={Color.Primary} iconTextColor={Color.White} onClickAction={() => {
                 getCategories()

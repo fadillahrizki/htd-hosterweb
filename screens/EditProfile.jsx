@@ -7,8 +7,7 @@ import {
   Alert, SafeAreaView,
   ScrollView,
   Text,
-  TextInput, TouchableOpacity, useColorScheme,
-  View
+  TextInput, TouchableOpacity, View
 } from 'react-native';
 import ImageLoad from 'react-native-image-placeholder';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -18,12 +17,10 @@ import { Color, globalStyles } from '../styles/global';
 
 
 function EditProfile({navigation}) {
-  const isDarkMode = useColorScheme() === 'dark';
-
   const [photo, setPhoto] = useState(null);
   const [profile, setProfile] = useState({})
   const [isSending, setIsSending] = useState(false)
-
+  
   const passwordRef = useRef()
   const addressRef = useRef()
   const phoneRef = useRef()
@@ -119,7 +116,7 @@ function EditProfile({navigation}) {
             padding: 24,
             display: 'flex',
             flexDirection: 'column',
-            gap: 12,
+            gap: 20,
           }}>
 
           <Formik
@@ -132,7 +129,7 @@ function EditProfile({navigation}) {
             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
               <View style={{
                 flexDirection:'column',
-                gap:20,
+                gap:12,
                 width:'100%'
               }}>
 

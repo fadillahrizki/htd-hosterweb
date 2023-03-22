@@ -3,16 +3,13 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import {
     Alert, Image,
-    SafeAreaView, Text,
-    useColorScheme,
-    View
+    SafeAreaView, Text, View
 } from 'react-native';
 import { getProfile } from '../api/ApiManager';
 import CustomButton from '../components/CustomButton';
 import { Color, globalStyles } from '../styles/global';
 
 function Home({navigation}) {
-    const isDarkMode = useColorScheme() === 'dark';
     const [profile, setProfile] = useState({})
 
     const handleLogout = () => {

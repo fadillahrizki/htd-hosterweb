@@ -5,8 +5,7 @@ import React, { useState } from 'react';
 import {
     Alert, SafeAreaView,
     ScrollView,
-    Text, TouchableOpacity, useColorScheme,
-    View
+    Text, TouchableOpacity, View
 } from 'react-native';
 import ImageLoad from 'react-native-image-placeholder';
 import { postTransaction } from '../api/ApiManager';
@@ -14,7 +13,6 @@ import CustomButton from '../components/CustomButton';
 import { Color, globalStyles } from '../styles/global';
 
 function DetailTransaksi({route, navigation}) {
-    const isDarkMode = useColorScheme() === 'dark';
 
     const item = route.params
 

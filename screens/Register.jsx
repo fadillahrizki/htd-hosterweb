@@ -6,8 +6,7 @@ import {
   Alert, SafeAreaView,
   ScrollView,
   Text,
-  TextInput, TouchableOpacity, useColorScheme,
-  View
+  TextInput, TouchableOpacity, View
 } from 'react-native';
 import ImageLoad from 'react-native-image-placeholder';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -16,8 +15,6 @@ import CustomButton from '../components/CustomButton';
 import { Color, globalStyles } from '../styles/global';
 
 function Register({navigation}) {
-  const isDarkMode = useColorScheme() === 'dark';
-
   const [photo, setPhoto] = useState(null);
   const [isSending, setIsSending] = useState(false)
 
@@ -83,7 +80,7 @@ function Register({navigation}) {
             padding: 24,
             display: 'flex',
             flexDirection: 'column',
-            gap: 12,
+            gap: 20,
           }}>
           
           <ImageLoad source={require('../assets/logo.png')} style={{alignSelf:'center', width:100, height:100}} />
@@ -100,7 +97,7 @@ function Register({navigation}) {
             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
               <View style={{
                 flexDirection:'column',
-                gap:20,
+                gap:12,
                 width:'100%'
               }}>
 
@@ -198,13 +195,14 @@ function Register({navigation}) {
                 {photo == null ? <Text style={globalStyles.errorText}>Pilih gambar terlebih dahulu!</Text> : ''}
 
                 <CustomButton text={'Register'} onPress={handleSubmit} disabled={(!values.name || !values.username || !values.password || !values.address || !values.phone || photo == null) || (!touched.name && !touched.username && !touched.password && !touched.address && !touched.phone)} isLoading={isSending} />
-                <Text style={{textAlign:'center'}}>Sudah punya akun?</Text>
-                <CustomButton text={'Login'} type={2} onPress={()=>navigation.replace('Login')} />
-
+                
               </View>
             )}
 
           </Formik>
+
+          <Text style={{textAlign:'center'}}>Sudah punya akun?</Text>
+          <CustomButton text={'Login'} type={2} onPress={()=>navigation.replace('Login')} />
           
         </View>
         </KeyboardAwareScrollView>

@@ -4,8 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import {
     Alert,
-    FlatList, Modal, RefreshControl, SafeAreaView, ScrollView, Text, TouchableOpacity, useColorScheme,
-    View
+    FlatList, Modal, SafeAreaView, Text, TouchableOpacity, View
 } from 'react-native';
 import FAB from 'react-native-fab';
 import ImageLoad from 'react-native-image-placeholder';
@@ -15,8 +14,6 @@ import NoData from '../components/NoData';
 import { Color, globalStyles } from '../styles/global';
 
 function PhotoManagement({navigation}) {
-    const isDarkMode = useColorScheme() === 'dark';
-
     const [data,setData] = useState([])
     const [photo, setPhoto] = useState(null);
     const [modalVisible, setModalVisible] = useState(false)
@@ -133,19 +130,14 @@ function PhotoManagement({navigation}) {
                 </SafeAreaView>
             </Modal>
 
-            <ScrollView
-                refreshControl={
-                    <RefreshControl refreshing={isLoading} onRefresh={getData} />
-                }
+            <FlatList
                 contentContainerStyle={{padding:12}}
-            > 
-                {
-                    data?.length > 0 ?
-                    <FlatList data={data} renderItem={({item, index}) => <ImageLoad source={{uri: item.file_url}} borderRadius={8} style={{height:200, marginVertical: 6}} resizeMode={'cover'}/>} /> :
-                    <NoData />
-                }
-                
-            </ScrollView>
+                refreshing={isLoading} 
+                onRefresh={getData}
+                ListEmptyComponent={<NoData />}
+                data={data} 
+                renderItem={({item}) => <ImageLoad key={item.id} source={{uri: item.file_url}} borderRadius={8} style={{height:200, marginVertical: 6}} resizeMode={'cover'}/>} 
+            />
 
             <FAB buttonColor={Color.Primary} iconTextColor={Color.White} onClickAction={() => setModalVisible(true)} visible={true} />
         </SafeAreaView>

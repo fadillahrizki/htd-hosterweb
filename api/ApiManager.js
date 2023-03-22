@@ -1,4 +1,4 @@
-import {API_URL} from '@env'
+import { API_URL } from '@env'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 
@@ -8,6 +8,14 @@ export const postLogin = async (body) => {
             'Content-Type':'multipart/form-data',
         }
     })).data.data
+}
+
+export const postForgotPassword = async (body) => {
+    return await axios.post(API_URL+'/reset-password', body, {
+        headers:{
+            'Content-Type':'multipart/form-data',
+        }
+    })
 }
 
 export const postRegister = async (body) => {

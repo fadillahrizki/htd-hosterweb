@@ -4,7 +4,7 @@ import { Formik } from 'formik';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert, Dimensions,
-  Image, SafeAreaView,
+  Image, Pressable, SafeAreaView,
   ScrollView, Text,
   TextInput, View
 } from 'react-native';
@@ -16,14 +16,8 @@ import CustomButton from '../components/CustomButton';
 import { Color, globalStyles } from '../styles/global';
 
 function Login({navigation}) {
-  const [message, setMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const [isError, setIsError] = useState(false)
   const [isSending, setIsSending] = useState(false)
-
   const passwordRef = useRef()
-
   const [slideShows, setSlideShows] = useState([])
 
   useEffect(()=>{
@@ -40,15 +34,13 @@ function Login({navigation}) {
       await AsyncStorage.setItem("token", await postLogin(values))
       navigation.replace('Home')
     } catch (error) {
-      setIsError(true)
       console.log(error)
       if (error.response) {
         console.log(error.response.data.message)
-        Alert.alert("Gagal", "Username/Password tidak sesuai!")
+        Alert.alert("Login Gagal", "Username/Password tidak sesuai!")
       } else {
-        console.log('Error', error.message);
-        setErrorMessage(error.message)
-        Alert.alert("Gagal", "Silahkan cek koneksi anda!")
+        console.log('Error', error.message)
+        Alert.alert("Login Gagal", "Silahkan cek koneksi anda!")
       }
     }
     setIsSending(false)
@@ -84,6 +76,8 @@ function Login({navigation}) {
               itemWidth={Dimensions.get('window').width}
             />
 
+            <Image source={require('../assets/logo.png')} style={{alignSelf:'center', width:100, height:100}} />
+
             <Formik
               initialValues={{username: '', password: ''}}
               onSubmit={(values)=>{
@@ -93,11 +87,9 @@ function Login({navigation}) {
               {({ handleChange, handleBlur, handleSubmit, values }) => (
                 <View style={{
                   flexDirection:'column',
-                  gap:20,
+                  gap:12,
                   width:'100%'
                 }}>
-
-                  <Image source={require('../assets/logo.png')} style={{alignSelf:'center', width:100, height:100}} />
 
                   <Text>Username</Text>
 
@@ -123,6 +115,10 @@ function Login({navigation}) {
                     onBlur={handleBlur('password')} 
                     secureTextEntry={true}
                     value={values.password}/>
+
+                  <Pressable onPress={()=>navigation.push('ForgotPassword')}>
+                    <Text style={{textAlign: 'right', marginVertical:12, color: Color.Primary}}>Lupa Password ?</Text>
+                  </Pressable>
 
                   <CustomButton text={'Login'} onPress={handleSubmit} isLoading={isSending}/>
                 </View>

@@ -4,6 +4,7 @@ import BankSoal from './screens/BankSoal';
 import DetailBankSoal from './screens/DetailBankSoal';
 import DetailTransaksi from './screens/DetailTransaksi';
 import EditProfile from './screens/EditProfile';
+import ForgotPassword from './screens/ForgotPassword';
 import Home from './screens/Home';
 import Login from './screens/Login';
 import PhotoManagement from './screens/PhotoManagement';
@@ -20,6 +21,7 @@ export default function App() {
       <Stack.Navigator initialRouteName={"Splash"} screenOptions={{title:'HosterWeb', headerTitleAlign:'center', headerTintColor: Color.White, headerStyle:{backgroundColor:Color.Primary}}}>
         <Stack.Screen name="Splash" component={Splash} options={{headerShown: false}}/>
         <Stack.Screen name="Login" component={Login} options={{headerShown: false}}/>
+        <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{headerShown: false}}/>
         <Stack.Screen name="PhotoManagement" component={PhotoManagement}/>
         <Stack.Screen name="Register" component={Register}/>
         <Stack.Screen name="EditProfile" component={EditProfile} />
