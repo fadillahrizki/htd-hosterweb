@@ -11,19 +11,9 @@ import {
 } from 'react-native';
 import ImageLoad from 'react-native-image-placeholder';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import * as yup from 'yup';
 import { postRegister } from '../api/ApiManager';
 import CustomButton from '../components/CustomButton';
 import { Color, globalStyles } from '../styles/global';
-
-const RegisterSchema = yup.object({
-  name: yup.string().required('Nama harus diisi!'),
-  username: yup.string().required('Username harus diisi!'),
-  password: yup.string().required('Password harus diisi!'),
-  address: yup.string().required('Alamat harus diisi!'),
-  phone: yup.string().required('No Hp harus diisi!')
-})
-
 
 function Register({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
@@ -100,7 +90,6 @@ function Register({navigation}) {
 
           <Formik
             initialValues={{name:'', username: '', password: '', address: '', phone: ''}}
-            validationSchema={RegisterSchema}
             onSubmit={async (values, {resetForm})=>{
               if(await handleRegister(values)) {
                 setPhoto(null)
@@ -129,7 +118,7 @@ function Register({navigation}) {
                   value={values.name}
                 />
 
-                {(errors.name && touched.name) ? <Text style={globalStyles.errorText}>{errors.name}</Text> : ''}
+                {(!values.name && touched.name) ? <Text style={globalStyles.errorText}>Nama harus diisi!</Text> : ''}
 
                 <Text>Username</Text>
 
@@ -146,7 +135,7 @@ function Register({navigation}) {
                   value={values.username}
                 />
 
-                {(errors.username && touched.username) ? <Text style={globalStyles.errorText}>{errors.username}</Text> : ''}
+                {(!values.username && touched.username) ? <Text style={globalStyles.errorText}>Username harus diisi!</Text> : ''}
 
                 <Text>Password</Text>
 
@@ -164,7 +153,7 @@ function Register({navigation}) {
                   secureTextEntry={true}
                 />
 
-                {(errors.password && touched.password) ? <Text style={globalStyles.errorText}>{errors.password}</Text> : ''}
+                {(!values.password && touched.password) ? <Text style={globalStyles.errorText}>Password harus diisi!</Text> : ''}
 
                 <Text>Alamat</Text>
 
@@ -181,7 +170,7 @@ function Register({navigation}) {
                   value={values.address}
                 />
 
-                {(errors.address && touched.address) ? <Text style={globalStyles.errorText}>{errors.address}</Text> : ''}
+                {(!values.address && touched.address) ? <Text style={globalStyles.errorText}>Alamat harus diisi!</Text> : ''}
 
                 <Text>No.HP/WA</Text>
 
@@ -196,7 +185,7 @@ function Register({navigation}) {
                   keyboardType={'phone-pad'}
                 />
 
-                {(errors.phone && touched.phone) ? <Text style={globalStyles.errorText}>{errors.phone}</Text> : ''}
+                {(!values.phone && touched.phone) ? <Text style={globalStyles.errorText}>No Hp harus diisi!</Text> : ''}
 
                 <TouchableOpacity onPress={selectFile} style={{width:150, height:150}}>
                   {
@@ -208,7 +197,7 @@ function Register({navigation}) {
 
                 {photo == null ? <Text style={globalStyles.errorText}>Pilih gambar terlebih dahulu!</Text> : ''}
 
-                <CustomButton text={'Register'} onPress={handleSubmit} disabled={(errors.name || errors.username || errors.password || errors.address || errors.phone || photo == null) || (!touched.name && !touched.username && !touched.password && !touched.address && !touched.phone)} isLoading={isSending} />
+                <CustomButton text={'Register'} onPress={handleSubmit} disabled={(!values.name || !values.username || !values.password || !values.address || !values.phone || photo == null) || (!touched.name && !touched.username && !touched.password && !touched.address && !touched.phone)} isLoading={isSending} />
                 <Text style={{textAlign:'center'}}>Sudah punya akun?</Text>
                 <CustomButton text={'Login'} type={2} onPress={()=>navigation.replace('Login')} />
 

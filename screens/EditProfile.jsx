@@ -12,16 +12,9 @@ import {
 } from 'react-native';
 import ImageLoad from 'react-native-image-placeholder';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import * as yup from 'yup';
 import { getProfile, postProfile } from '../api/ApiManager';
 import CustomButton from '../components/CustomButton';
 import { Color, globalStyles } from '../styles/global';
-
-const EditProfileSchema = yup.object({
-  name: yup.string().required('Nama harus diisi!'),
-  address: yup.string().required('Alamat harus diisi!'),
-  phone: yup.string().required('No Hp harus diisi!')
-})
 
 
 function EditProfile({navigation}) {
@@ -130,9 +123,8 @@ function EditProfile({navigation}) {
           }}>
 
           <Formik
-          enableReinitialize={true}
+            enableReinitialize={true}
             initialValues={{name:profile?.name, username: profile?.username, password: '', address: profile?.address, phone: profile?.phone}}
-            validationSchema={EditProfileSchema}
             onSubmit={(values)=>{
               handleEditProfile(values)
             }}
@@ -158,7 +150,7 @@ function EditProfile({navigation}) {
                   value={values.name}
                 />
 
-                {(errors.name && touched.name) ? <Text style={globalStyles.errorText}>{errors.name}</Text> : ''}
+                {(!values.name && touched.name) ? <Text style={globalStyles.errorText}>Nama harus diisi!</Text> : ''}
 
                 <Text>Username</Text>
 
@@ -200,7 +192,7 @@ function EditProfile({navigation}) {
                   value={values.address}
                 />
 
-                {(errors.address && touched.address) ? <Text style={globalStyles.errorText}>{errors.address}</Text> : '' }
+                {(!values.address && touched.address) ? <Text style={globalStyles.errorText}>Alamat harus diisi!</Text> : ''}
 
                 <Text>No.HP/WA</Text>
 
@@ -215,7 +207,7 @@ function EditProfile({navigation}) {
                   keyboardType={'phone-pad'}
                 />
 
-                {(errors.phone && touched.phone) ? <Text style={globalStyles.errorText}>{errors.phone}</Text> : ''}
+                {(!values.phone && touched.phone) ? <Text style={globalStyles.errorText}>No Hp harus diisi!</Text> : ''}
 
                 <TouchableOpacity onPress={selectFile} style={{width:150, height:150}}>
                   {
@@ -227,7 +219,7 @@ function EditProfile({navigation}) {
 
                 {(photo == null && !profile.pic_url) ? <Text style={globalStyles.errorText}>Pilih gambar terlebih dahulu!</Text> : ''}
                 
-                <CustomButton text={'Edit Profile'} onPress={handleSubmit} disabled={(errors.name || errors.address || errors.phone) || (!touched.name && !touched.address && !touched.phone)} isLoading={isSending} />
+                <CustomButton text={'Edit Profile'} onPress={handleSubmit} disabled={(!values.name || !values.address || !values.phone) || (!touched.name && !touched.address && !touched.phone)} isLoading={isSending} />
 
               </View>
             )}
