@@ -1,5 +1,5 @@
 {
-  "name": "hosterweb",
+  "name": "inderi-mobile",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start --dev-client",

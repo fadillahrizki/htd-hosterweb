@@ -1,4 +1,4 @@
-package com.htd.hosterweb;
+package com.htd.inderi;
 
 import android.app.Application;
 import android.content.res.Configuration;

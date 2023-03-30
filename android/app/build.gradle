@@ -113,9 +113,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace 'com.htd.hosterweb'
+    namespace 'com.htd.inderi'
     defaultConfig {
-        applicationId 'com.htd.hosterweb'
+        applicationId 'com.htd.inderi'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -138,7 +138,7 @@ android {
             keyPassword 'android'
         }
         release {
-            storeFile file('hosterweb.keystore')
+            storeFile file('inderi.keystore')
             storePassword 'despacito'
             keyAlias 'despacito'
             keyPassword 'despacito'

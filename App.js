@@ -18,7 +18,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={"Splash"} screenOptions={{title:'HosterWeb', headerTitleAlign:'center', headerTintColor: Color.White, headerStyle:{backgroundColor:Color.Primary}}}>
+      <Stack.Navigator initialRouteName={"Splash"} screenOptions={{title:'INDERI MOBILE', headerTitleAlign:'center', headerTintColor: Color.White, headerStyle:{backgroundColor:Color.Primary}}}>
         <Stack.Screen name="Splash" component={Splash} options={{headerShown: false}}/>
         <Stack.Screen name="Login" component={Login} options={{headerShown: false}}/>
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{headerShown: false}}/>
