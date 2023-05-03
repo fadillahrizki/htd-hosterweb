@@ -61,7 +61,7 @@ function Home({navigation}) {
                     </Text>
 
                     <CustomButton text={'Edit Profile'} onPress={()=>navigation.push('EditProfile')} />
-                    <CustomButton text={'Bank Soal'} onPress={()=>navigation.push('BankSoal')} />
+                    <CustomButton text={'Bank Kasus'} onPress={()=>navigation.push('BankSoal')} />
                     <CustomButton text={'Manajemen Foto'} onPress={()=>navigation.push('PhotoManagement')} />
                     <CustomButton text={'Transaksi'} onPress={()=>navigation.push('Transaksi')} />
                     <CustomButton text={'Keluar'} onPress={handleLogout} />
